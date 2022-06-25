@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="">
+    <div class="container text-center mt-5 card bg-dark shadow p-3 mb-5 rounded " style="width:20rem;">
+        <img src="{{products.image.url}}" class="card-img-top" alt="..." width="300vh" height="300vh">
+        <div class="card-body">
+          <h5 class="card-title">Title: {{products.title}}</h5>
+          <p class="card-text">Description: {{products.description}}</p>
+          <span class='card-text'>Price: {{products.price}}</span><br>
+          <br>
+          <a href='{% url 'product:products' %}' class="btn btn-primary">Go Back</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
