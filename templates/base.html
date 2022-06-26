@@ -12,13 +12,25 @@
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{% static 'simplesocial/css/master.css' %}" type="text/css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" rel="stylesheet">
+<style>
+    *{
+        font-family: 'Fira Code', monospace;
+    }
+    body{
+        height:100%;
+    }
+</style>
 {% include 'nav.html' %}
 </head>
-<body >
-    <div class="container">
+<body>
+        <div class="container">
     {% block content %}{% endblock content %}
 </div>
-<canvas id="canvas"></canvas>
+
+<canvas id="canvas" style="position:fixed; top:0; z-index: -1;"></canvas>
 </body>
 <script src="{% static 'simplesocial/js/master.js' %}"></script>
 </html>

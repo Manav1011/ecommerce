@@ -1,4 +1,3 @@
-from re import U
 from webbrowser import get
 from django import forms
 from django.contrib.auth.forms import  UserCreationForm

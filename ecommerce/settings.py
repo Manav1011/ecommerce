@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'product',
-    'bootstrap4'
+    'bootstrap4',
+    'search',
+    'tags',
 ]
 
 MIDDLEWARE = [
