@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.db.models.signals import pre_save,post_save
 from django.utils.text import slugify
 import os
+from django.urls import reverse
 
 def get_filename_ext(filepath):
     base_name=os.path.basename(filepath)
@@ -64,6 +65,10 @@ class Product(models.Model):
     timestemp=models.DateTimeField(auto_now_add=True)
     
     objects=ProductManager()
+    
+    def get_absolute_url(self):
+        return reverse("product:product_detail", kwargs={"slug": self.slug})
+    
     
     def __str__(self):
         return self.title

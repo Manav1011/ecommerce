@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'search',
     'tags',
+    'carts'
 ]
 
 MIDDLEWARE = [

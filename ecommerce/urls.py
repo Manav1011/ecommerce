@@ -27,4 +27,5 @@ urlpatterns = [
     re_path(r'^logout/$',LogoutView.as_view(),name='logout'),
     path('product/',include('product.urls')),
     re_path(r'^search/$',include('search.urls')),
+    path('carts/',include('carts.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
