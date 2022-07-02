@@ -1,0 +1,15 @@
+{% load bootstrap4 %}
+<div class="container col-6 text-center shadow rounded p-3 text-light">
+    <form action={% url 'checkout_address_create' %} method="post">
+        {% csrf_token %}
+        {% if next %}
+        <input type="hidden" name="next" value="{{next}}">
+        {% endif %}
+
+        {% if address_type %}
+        <input type="hidden" name="address_type" value="{{address_type}}">
+        {% endif %}
+        <div class="p-2 m-3">{%bootstrap_form address_form%}</div>
+        <input type="submit" value="Submit" class="btn btn-primary mt-3">
+    </form>
+</div> 

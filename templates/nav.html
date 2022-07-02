@@ -11,7 +11,7 @@
           </li>
           {% if not user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href={% url 'product:signup' %}>SignUp</a>
+            <a class="nav-link" href={% url 'accounts:signup' %}>SignUp</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href={% url 'login' %}>LogIn</a>
@@ -51,7 +51,43 @@
             </a>
           </li>
         </ul>
+
+            <div id="MyClockDisplay" class="clock nav-item" onload="showTime()" style="color: #17D4FE;
+        font-family: Orbitron;
+        letter-spacing: 7px;"></div>
       </div>
     </div>
   </nav>
+
+<script>
+  function showTime(){
+    var date = new Date();
+    var h = date.getHours(); // 0 - 23
+    var m = date.getMinutes(); // 0 - 59
+    var s = date.getSeconds(); // 0 - 59
+    var session = "AM";
+    
+    if(h == 0){
+        h = 12;
+    }
+    
+    if(h > 12){
+        h = h - 12;
+        session = "PM";
+    }
+    
+    h = (h < 10) ? "0" + h : h;
+    m = (m < 10) ? "0" + m : m;
+    s = (s < 10) ? "0" + s : s;
+    
+    var time = h + ":" + m + ":" + s + " " + session;
+    document.getElementById("MyClockDisplay").innerText = time;
+    document.getElementById("MyClockDisplay").textContent = time;
+    
+    setTimeout(showTime, 1000);
+    
+}
+
+showTime();
+</script>
   

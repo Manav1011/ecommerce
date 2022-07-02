@@ -29,10 +29,15 @@
         <td colspan="3"></td>
         <td><b>Total: </b>{{cart.total}}</td>
       </tr>
+      <tr>
+        <td colspan="4"><a href={% url 'carts:checkout' %} class="btn col-12 btn-outline-success">Checkout</a></td>
+      </tr>
     </tbody>
   </table>
+  <a href="{% url 'product:products' %}" class="btn btn-outline-light mt-5 c-12 btn-lg">Add More Products To Cart</a>
   {% else %}
-  <span class="lead">Cart Is Empty</span>
+  <span class="lead">Cart Is Empty</span><br>
+  <a href="{% url 'product:products' %}" class="btn btn-outline-light mt-5 c-12 btn-lg">Add Products To Cart</a>
   {% endif %}
 </div>
 {% endblock content %}

@@ -1,205 +1,146 @@
-// SOURCE: http://codepen.io/Thibka/pen/mWGxNj
-var canvas = document.getElementById('canvas'),
-  context = canvas.getContext('2d'),
-  canvasWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth),
-  canvasHeight = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight),
-  requestAnimationFrame = window.requestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.msRequestAnimationFrame;
-var persons = [],
-  numberOfFirefly = 30,
-  birthToGive = 25;
+// Little Canvas things
+var canvas = document.querySelector("#canvas"),
+    ctx = canvas.getContext('2d');
 
-var colors = [];
-/* Galactic Tea - http://www.colourlovers.com/palette/1586746/Galactic_Tea*/
-colors[2] = [];
-colors[2]['background'] = '#2F294F';
-colors[2][1] = 'rgba(74,49,89,';
-colors[2][2] = 'rgba(130,91,109,';
-colors[2][3] = 'rgba(185,136,131,';
-colors[2][4] = 'rgba(249,241,204,';
+// Set Canvas to be window size
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-var colorTheme = 2, //getRandomInt(0,colors.length-1);
-  mainSpeed = 1;
+// Configuration, Play with these
+var config = {
+  particleNumber: 50,
+  maxParticleSize: 10,
+  maxSpeed: 1,
+  colorVariation: 50
+};
 
-function getRandomInt(min, max, exept) {
-  var i = Math.floor(Math.random() * (max - min + 1)) + min;
-  if (typeof exept == "undefined") return i;
-  else if (typeof exept == 'number' && i == exept) return getRandomInt(min, max, exept);
-  else if (typeof exept == "object" && (i >= exept[0] && i <= exept[1])) return getRandomInt(min, max, exept);
-  else return i;
-}
+// Colors
+var colorPalette = {
+    bg: {r:12,g:9,b:29},
+    matter: [
+      {r:36,g:18,b:42}, // darkPRPL
+      {r:78,g:36,b:42}, // rockDust
+      {r:252,g:178,b:96}, // solorFlare
+      {r:253,g:238,b:152} // totesASun
+    ]
+};
 
-function isEven(n) {
-  return n == parseFloat(n) ? !(n % 2) : void 0;
-}
+// Some Variables hanging out
+var particles = [],
+    centerX = canvas.width / 2,
+    centerY = canvas.height / 2,
+    drawBg,
 
-function degToRad(deg) {
-  return deg * (Math.PI / 180);
-}
+// Draws the background for the canvas, because space
+drawBg = function (ctx, color) {
+    ctx.fillStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+};
 
-function Firefly(id) {
-  this.id = id;
-  this.width = getRandomInt(3, 6);
-  this.height = this.width;
-  this.x = getRandomInt(0, (canvas.width - this.width));
-  this.y = getRandomInt(0, (canvas.height - this.height));
-  this.speed = (this.width <= 10) ? 2 : 1;
-  this.alpha = 1;
-  this.alphaReduction = getRandomInt(1, 3) / 1000;
-  this.color = colors[colorTheme][getRandomInt(1, colors[colorTheme].length - 1)];
-  this.direction = getRandomInt(0, 360);
-  this.turner = getRandomInt(0, 1) == 0 ? -1 : 1;
-  this.turnerAmp = getRandomInt(1, 2);
-  this.isHit = false;
-  this.stepCounter = 0;
-  this.changeDirectionFrequency = getRandomInt(1, 200);
-  this.shape = 2; //getRandomInt(2,3);
-  this.shadowBlur = getRandomInt(5, 25);
-}
+// Particle Constructor
+var Particle = function (x, y) {
+    // X Coordinate
+    this.x = x || Math.round(Math.random() * canvas.width);
+    // Y Coordinate
+    this.y = y || Math.round(Math.random() * canvas.height);
+    // Radius of the space dust
+    this.r = Math.ceil(Math.random() * config.maxParticleSize);
+    // Color of the rock, given some randomness
+    this.c = colorVariation(colorPalette.matter[Math.floor(Math.random() * colorPalette.matter.length)],true );
+    // Speed of which the rock travels
+    this.s = Math.pow(Math.ceil(Math.random() * config.maxSpeed), .7);
+    // Direction the Rock flies
+    this.d = Math.round(Math.random() * 360);
+};
 
-Firefly.prototype.stop = function() {
-  this.update();
-}
+// Provides some nice color variation
+// Accepts an rgba object
+// returns a modified rgba object or a rgba string if true is passed in for argument 2
+var colorVariation = function (color, returnString) {
+    var r,g,b,a, variation;
+    r = Math.round(((Math.random() * config.colorVariation) - (config.colorVariation/2)) + color.r);
+    g = Math.round(((Math.random() * config.colorVariation) - (config.colorVariation/2)) + color.g);
+    b = Math.round(((Math.random() * config.colorVariation) - (config.colorVariation/2)) + color.b);
+    a = Math.random() + .5;
+    if (returnString) {
+        return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+    } else {
+        return {r,g,b,a};
+    }
+};
 
-Firefly.prototype.walk = function() {
-  var next_x = this.x + Math.cos(degToRad(this.direction)) * this.speed,
-    next_y = this.y + Math.sin(degToRad(this.direction)) * this.speed;
+// Used to find the rocks next point in space, accounting for speed and direction
+var updateParticleModel = function (p) {
+    var a = 180 - (p.d + 90); // find the 3rd angle
+    p.d > 0 && p.d < 180 ? p.x += p.s * Math.sin(p.d) / Math.sin(p.s) : p.x -= p.s * Math.sin(p.d) / Math.sin(p.s);
+    p.d > 90 && p.d < 270 ? p.y += p.s * Math.sin(a) / Math.sin(p.s) : p.y -= p.s * Math.sin(a) / Math.sin(p.s);
+    return p;
+};
 
-  // Canvas limits
-  if (next_x >= (canvas.width - this.width) && (this.direction < 90 || this.direction > 270)) {
-    next_x = canvas.width - this.width;
-    this.direction = getRandomInt(90, 270, this.direction);
-  }
-  if (next_x <= 0 && (this.direction > 90 && this.direction < 270)) {
-    next_x = 0;
-    var exept = [90, 270];
-    this.direction = getRandomInt(0, 360, exept);
-  }
-  if (next_y >= (canvas.height - this.height) && (this.direction > 0 && this.direction < 180)) {
-    next_y = canvas.height - this.height;
-    this.direction = getRandomInt(180, 360, this.direction);
-  }
-  if (next_y <= 0 && (this.direction > 180 && this.direction < 360)) {
-    next_y = 0;
-    this.direction = getRandomInt(0, 180, this.direction);
-  }
+// Just the function that physically draws the particles
+// Physically? sure why not, physically.
+var drawParticle = function (x, y, r, c) {
+    ctx.beginPath();
+    ctx.fillStyle = c;
+    ctx.arc(x, y, r, 0, 2*Math.PI, false);
+    ctx.fill();
+    ctx.closePath();
+};
 
-  this.x = next_x;
-  this.y = next_y;
+// Remove particles that aren't on the canvas
+var cleanUpArray = function () {
+    particles = particles.filter((p) => { 
+      return (p.x > -100 && p.y > -100); 
+    });
+};
 
-  this.stepCounter++;
 
-  if (this.changeDirectionFrequency && this.stepCounter == this.changeDirectionFrequency) {
-    this.turner = this.turner == -1 ? 1 : -1;
-    this.turnerAmp = getRandomInt(1, 2);
-    this.stepCounter = 0;
-    this.changeDirectionFrequency = getRandomInt(1, 200);
-  }
+var initParticles = function (numParticles, x, y) {
+    for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle(x, y));
+    }
+    particles.forEach((p) => {
+        drawParticle(p.x, p.y, p.r, p.c);
+    });
+};
 
-  this.direction += this.turner * this.turnerAmp;
+// That thing
+window.requestAnimFrame = (function() {
+  return window.requestAnimationFrame ||
+     window.webkitRequestAnimationFrame ||
+     window.mozRequestAnimationFrame ||
+     function(callback) {
+        window.setTimeout(callback, 1000 / 60);
+     };
+})();
 
-  this.update();
-}
 
-Firefly.prototype.takeOppositeDirection = function() {
-  // Right -> Left
-  if ((this.direction >= 0 && this.direction < 90) || (this.direction > 270 && this.direction <= 360)) {
-    this.direction = getRandomInt(90, 270);
-    return;
-  }
-  // Left -> Right
-  if (this.direction > 90 && this.direction < 270) {
-    var exept = [90, 270];
-    this.direction = getRandomInt(0, 360, exept);
-    return;
-  }
-  // Down -> Up
-  if (this.direction > 0 && this.direction < 180) {
-    this.direction = getRandomInt(180, 360);
-    return;
-  }
-  // Up -> Down
-  if (this.direction > 180) {
-    this.direction = getRandomInt(0, 180);
-  }
-}
-
-Firefly.prototype.update = function() {
-
-  context.beginPath();
-
-  context.fillStyle = this.color + this.alpha + ")";
-  context.arc(this.x + (this.width / 2), this.y + (this.height / 2), this.width / 2, 0, 2 * Math.PI, false);
-  context.shadowColor = this.color + this.alpha + ")";
-  context.shadowBlur = this.shadowBlur;
-  context.shadowOffsetX = 0;
-  context.shadowOffsetY = 0;
-  context.fill();
-
-  if (this.id > 15) {
-    this.alpha -= this.alphaReduction;
-    if (this.alpha <= 0) this.die();
-  }
-
-}
-
-Firefly.prototype.die = function() {
-  persons[this.id] = null;
-  delete persons[this.id];
-}
-
-window.onload = function() {
-  canvas.setAttribute('width', canvasWidth);
-  canvas.setAttribute('height', canvasHeight);
-
-  start();
-}
-
-function start() {
-  instantiatePopulation();
-  animate();
-}
-
-function instantiatePopulation() {
-  var i = 0;
-  while (i < numberOfFirefly) {
-    persons[i] = new Firefly(i);
-    i++;
-  }
-}
-
-function animate() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  context.beginPath();
-
-  // Création d'une copie de l'array persons
-  persons_order = persons.slice(0);
-  // Tri par ordre de position sur l'axe y (afin de gérer les z-index)
-  persons_order.sort(function(a, b) {
-    return a.y - b.y
+// Our Frame function
+var frame = function () {
+  // Draw background first
+  drawBg(ctx, colorPalette.bg);
+  // Update Particle models to new position
+  particles.map((p) => {
+    return updateParticleModel(p);
   });
+  // Draw em'
+  particles.forEach((p) => {
+      drawParticle(p.x, p.y, p.r, p.c);
+  });
+  // Play the same song? Ok!
+  window.requestAnimFrame(frame);
+};
 
-  // Paint les instances dans l'ordre trié
-  for (var i in persons_order) {
-    var u = persons_order[i].id;
-    persons[u].walk();
-  }
+// Click listener
+document.body.addEventListener("click", function (event) {
+    var x = event.clientX,
+        y = event.clientY;
+    cleanUpArray();
+    initParticles(config.particleNumber, x, y);
+});
 
-  requestAnimationFrame(animate);
-}
+// First Frame
+frame();
 
-canvas.onclick = function(e) {
-  giveBirth(e, birthToGive);
-}
-
-function giveBirth(e, u) {
-  var i = persons.length;
-  persons[i] = new Firefly(i);
-  persons[i].x = e.layerX;
-  persons[i].y = e.layerY;
-
-  if (u > 1) giveBirth(e, u - 1);
-}
+// First particle explosion
+initParticles(config.particleNumber);

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+{% if not billing_profile %}
+        <div class="container m-5">
+        <div class="row">
+        <div class="col-12 col-md-6 ">
+            <p class="lead">Login</p>
+
+            <form action={% url 'carts:checkout' %} method="post">
+                {% if next %}
+                <input type="hidden" name="next_url" value="{{next}}"> 
+                {% csrf_token %}
+            {%bootstrap_form form%}
+            <input type="submit" value="Login" class="btn btn-primary mt-3">
+            {% endif %}
+        </form>
+
+        </div>
+
+        <div class="col-12 col-md-6 ">
+            <p class="lead">Continue as guest</p>
+            <form action={% url 'guest_register' %} method="post">
+                {% if next %}
+                <input type="hidden" name="next_url" value="{{next}}"> 
+                {% csrf_token %}
+            {%bootstrap_form guestform%}
+            <input type="submit" value="Register" class="btn btn-primary mt-3">
+            {% endif %}
+        </form>
+        </div>
+
+        </div>
+{% else %}
+        {% if not object.shipping_address%}
+        <h3 class="text-center">Shipping Address Form</h3>
+        <hr>
+        <div class="row">
+            {% include 'addresses/form.html' with address_type='shipping'%}
+
+            {% include 'addresses/previous_addresses.html' with address_qs=address_qs next_url=next address_type='shipping'%}
+        </div>
+        {% elif not object.billing_address %}
+        <h3 class="text-center">Billing Address Form</h3>
+        <hr>
+        <div class="row">
+            {% include 'addresses/form.html' with address_type='billing'%}
+            {% include 'addresses/previous_addresses.html' with address_qs=address_qs next_url=next address_type='billing'%}
+            </div
+        {% else %}
+        <div class="container text-center">
+
+
+            <h1>Finalize Checkout</h1>
+            <p>Cart Items: {% for product in object.cart.products.all %}{{product}}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+            <p>Cart Total: {{object.cart.total}}</p>
+            <p>Shipping Address: {{object.shipping_address_id.address}}</p>
+            <p>billing Address: {{object.billing_address_id.address}}</p>
+            <p>Shipping total: {{object.shipping_total}}</p>
+            <p>Order Total: {{object.order_total}}</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Checkout" class="btn btn-outline-success" />
+            </form>
+        </div>
+
+            </div>
+    {% endif %}
+{% endif %}
+
+{% endblock content %}
