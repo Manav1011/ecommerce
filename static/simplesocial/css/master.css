@@ -1,6 +1,12 @@
 body {
   margin: 0;
   overflow:scroll;
-  background-color: black;
-  color:white;
 }
+
+/* .dark-mode-nav{
+  color: white;
+}
+.light-mode-nav{
+  color: black;
+} */
+

@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container text-center">
+<div class="container text-center shadow-lg p-2">
 <h1>Cart</h1>
 {% if cart.products.exists %}
-<table class="table text-white">
+<table class="table" id='table'>
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -34,10 +34,10 @@
       </tr>
     </tbody>
   </table>
-  <a href="{% url 'product:products' %}" class="btn btn-outline-light mt-5 c-12 btn-lg">Add More Products To Cart</a>
+  <a href="{% url 'product:products' %}" class="btn btn-outline-primary mt-5 c-12 btn-lg">Add More Products To Cart</a>
   {% else %}
   <span class="lead">Cart Is Empty</span><br>
-  <a href="{% url 'product:products' %}" class="btn btn-outline-light mt-5 c-12 btn-lg">Add Products To Cart</a>
+  <a href="{% url 'product:products' %}" class="btn btn-outline-primary mt-5 c-12 btn-lg">Add Products To Cart</a>
   {% endif %}
 </div>
 {% endblock content %}

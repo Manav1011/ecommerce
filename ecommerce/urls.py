@@ -22,10 +22,11 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView,LogoutView
 from addresses.views import checkout_address_create_view,checkout_address_reuse_view
 from accounts.views import guest_login_form
+from . import views as ecommerceview
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('^$',TemplateView.as_view(template_name='home.html'),name='home'),
+    re_path('^$',ecommerceview.HomeView.as_view(),name='home'),
     re_path(r'^login/$',LoginView.as_view(template_name='login.html'),name='login'),
     re_path(r'^logout/$',LogoutView.as_view(),name='logout'),
     path('accounts/',include('accounts.urls')),
