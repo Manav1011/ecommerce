@@ -1,6 +1,13 @@
+*{
+  font-family: 'Fira Code', monospace;
+}
 body {
+  height:100%;
   margin: 0;
   overflow:scroll;
+}
+.nav{
+  font-size: smaller;
 }
 
 /* .dark-mode-nav{

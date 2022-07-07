@@ -19,6 +19,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'product:products' %}">Products</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+          </li>
           <li class="nav-item d-flex justify-content-between">
             <label class="form-check-label nav-link" for="flexSwitchCheckDefault">Dark Mode</label>
             <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">            
@@ -29,6 +32,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href={% url 'product:products' %}>Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
           </li>
           <li class="nav-item d-flex justify-content-between">
             <label class="form-check-label nav-link" for="flexSwitchCheckDefault">Dark Mode</label>
@@ -61,42 +67,7 @@
           </li>
         </ul>
 
-            <div id="MyClockDisplay" class="clock nav-item" onload="showTime()" style="color: #17D4FE;
-        font-family: Orbitron;
-        letter-spacing: 7px;"></div>
+            
       </div>
     </div>
   </nav>
-
-<script>
-  function showTime(){
-    var date = new Date();
-    var h = date.getHours(); // 0 - 23
-    var m = date.getMinutes(); // 0 - 59
-    var s = date.getSeconds(); // 0 - 59
-    var session = "AM";
-    
-    if(h == 0){
-        h = 12;
-    }
-    
-    if(h > 12){
-        h = h - 12;
-        session = "PM";
-    }
-    
-    h = (h < 10) ? "0" + h : h;
-    m = (m < 10) ? "0" + m : m;
-    s = (s < 10) ? "0" + s : s;
-    
-    var time = h + ":" + m + ":" + s + " " + session;
-    document.getElementById("MyClockDisplay").innerText = time;
-    document.getElementById("MyClockDisplay").textContent = time;
-    
-    setTimeout(showTime, 1000);
-    
-}
-
-showTime();
-</script>
-  
