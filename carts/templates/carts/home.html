@@ -3,7 +3,7 @@
 <div class="container text-center shadow-lg p-2">
 <h1>Cart</h1>
 {% if cart.products.exists %}
-<table class="table" id='table'>
+<table class="table cart_table" id='table'>
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -12,22 +12,24 @@
         <th scope="col">Action</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class='cart_body' >
+      <div>
     {% for product in cart.products.all %}
-      <tr>
+      <tr class="cart_products">
         <th scope="row">{{forloop.counter}}</th>
         <td><b><a href='{{product.get_absolute_url}}' class='link-primary'>{{product.title}}</a></b></td>
         <td>{{product.price}}</td>
-        <td>{% include 'product/update_cart.html' %}</td>
+        <td>{% include 'carts/snippets/remove_from_cart.html' with product_id=product.id %}</td>
       </tr>
       {% endfor %}
+    </div>
        <tr>
         <td colspan="3"></td>
-        <td><b>Subtotal: </b>{{cart.subtotal}}</td>
+        <td><span class="cart_subtotal"><b>Subtotal: </b>{{cart.subtotal}}</span></td>
       </tr>
       <tr>
         <td colspan="3"></td>
-        <td><b>Total: </b>{{cart.total}}</td>
+        <td><span class="total"><b>Total: </b>{{cart.total}}</span></td>
       </tr>
       <tr>
         <td colspan="4"><a href={% url 'carts:checkout' %} class="btn col-12 btn-outline-success">Checkout</a></td>
@@ -40,4 +42,84 @@
   <a href="{% url 'product:products' %}" class="btn btn-outline-primary mt-5 c-12 btn-lg">Add Products To Cart</a>
   {% endif %}
 </div>
+
+<div class="cart_remove_button_form" style="display: none;">
+  {% include 'carts/snippets/remove_from_cart.html'%}
+</div>
+
+<script>
+  $(document).ready(function() {
+    var remove_product_form=$('.remove_product_form_ajax');
+    remove_product_form.submit(function(event){
+        event.preventDefault();
+        var thisForm=$(this)
+        var actionEndPoint="{% url 'carts:update' %}"
+        var httpmethod=thisForm.attr('method')
+        var formData=thisForm.serialize()
+        $.ajax({
+          url: actionEndPoint,
+          method: httpmethod,
+          data:formData,
+          success:function(data){
+            console.log('Success!',data);
+            var NavbarCartItemCount=$('#cart_item_count')
+            NavbarCartItemCount.text(data.count) 
+            var currentPath=window.location.href
+            if (currentPath.indexOf('/carts/') != -1){
+              refreshCart()
+            }               
+          },
+          error:function(errorData){
+            console.log(errorData)
+        }
+        });
+    });
+    function refreshCart(){
+      console.log('in current cart')
+      var cartTable=$('.cart_table')
+      var cartBody=cartTable.find('.cart_body')
+      var cartProducts=cartTable.find('.cart_products')
+      var cartSubTotal=cartTable.find('.cart_subtotal')
+      var cartTotal=cartTable.find('.total')
+      var refreshCartUrl= '/api/cart/'
+      var refreshCartMethod="GET";
+      var data={};
+      $.ajax({
+        url:refreshCartUrl,
+        method:refreshCartMethod,
+        data:data,
+        success:function(data){
+          
+          var cartForm=$('.cart_form')
+
+          if(data.product.length>0){
+            var i=0
+            cartProducts.empty();
+            console.log(data.product)
+            var cartRemove=$('.cart_remove_button_form')
+            
+            for(var item in data.product){
+
+              var newcartitemremove=cartRemove.clone();
+              newcartitemremove.find('.remove_form_id').val(data.product[item].id)
+              cartBody.prepend("<tr><th scope=row>"+i+"</th><td><b><a href="+data.product[item].url+"class=link-primary>"+data.product[item].title+"</a></b></td><td>"+data.product[item].price+"</td><td>"+newcartitemremove.html()+"</td></tr>");
+              i++;
+            }
+            cartSubTotal.html('<b>Total: </b>'+data.subtotal);
+            cartTotal.html('<b>Total: </b>'+data.total);
+          }
+          else{
+            window.location.reload();
+          }
+
+        },
+        error:function(errorData){
+          console.log('error',errorData) 
+        }
+      })
+      }
+  });
+</script>
 {% endblock content %}
+
+

@@ -12,8 +12,8 @@
 
 <div class="row mt-5 g">
     {% for i  in products %}
-        <div class="col-sm-12 col-lg-4 col-md-6 col-xl-4">
-            <div class="card bg-dark container text-center mt-5 card bg-dark shadow p-3 mb-5 rounded" style="width: 18rem;">
+        <div class="col-sm-12 col-lg-4 col-md-6 col-xl-4" >
+            <div class="card bg-dark container text-center mt-5 card bg-dark shadow p-3 mb-5 rounded" id="other-components" style="width: 18rem;">
                 <img src="{{i.image.url}}" class="card-img-top" alt="..." width="300vh" height="300vh">
                 <div class="card-body">
                   <h5 class="card-title">Title: {{i.title}}</h5>

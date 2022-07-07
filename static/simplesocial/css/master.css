@@ -9,4 +9,6 @@ body {
 .light-mode-nav{
   color: black;
 } */
-
+.searched-item{
+    border-radius: 0 !important;
+}

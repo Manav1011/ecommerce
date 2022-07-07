@@ -23,6 +23,8 @@ from django.contrib.auth.views import LoginView,LogoutView
 from addresses.views import checkout_address_create_view,checkout_address_reuse_view
 from accounts.views import guest_login_form
 from . import views as ecommerceview
+from carts.views import cart_detail_api_view
+from search.views import getProducts
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,8 +34,10 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('product/',include('product.urls')),
     re_path(r'^search/$',include('search.urls')),
+    re_path(r'^api/cart/$',cart_detail_api_view,name='api_cart'),
     path('carts/',include('carts.urls')),
     re_path(r'^checkout/address/create/$',checkout_address_create_view,name='checkout_address_create'),
     re_path(r'^checkout/address/reuse/$',checkout_address_reuse_view,name='checkout_address_reuse'),
     re_path(r'^register/guest$',guest_login_form,name='guest_register'),
+    re_path(r'^get_products/',getProducts,name='get_products'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
