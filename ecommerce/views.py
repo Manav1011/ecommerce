@@ -8,12 +8,16 @@ class HomeView(TemplateView):
     template_name='home.html'
     
     def get_context_data(self, **kwargs):
-        self.request.session['theme']='dark'
+        self.request.session['dark']=True
         context = super().get_context_data(**kwargs)
-        context["default_theme"] = self.request.session.get('theme')
-        context["state"] = 'checked'
         return context
-
+    
+def dark_mode(request):
+    dark=request.session.get('dark')
+    dark=not dark
+    request.session['dark']=dark
+    return JsonResponse({'dark':dark})
+    
 def ContactView(request):
     contactForm=forms.ContactForm(request.POST or None)    
     if contactForm.is_valid():

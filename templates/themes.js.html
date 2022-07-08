@@ -1,3 +1,19 @@
+<script>
+  $(document).ready(function() {
+    $('.dark_theme').click(function(event) {
+      event.preventDefault();
+      $.ajax({
+        type:'GET',
+        url:'/theme/',
+        success: function(response){
+          console.log(response.dark);
+        },
+        error:function(errorData){
+          console.log(errorData);
+        }
+      })  
+    })
+  });
 function refresh_page(){
     window.location.reload();
     DarkModeOnOff();
@@ -48,3 +64,4 @@ function refresh_page(){
           document.getElementById("table").classList.remove('table-dark');
       }                   
     }
+  </script>

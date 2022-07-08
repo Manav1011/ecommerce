@@ -17,7 +17,7 @@
 </head>
 <body id="content" onload="loading()">
         <div class="container">
-        <script src={% static 'simplesocial/js/themes.js' %}></script>
+        {% include 'themes.js.html' %}
     {% block content %}{% endblock content %}
 </div>
 

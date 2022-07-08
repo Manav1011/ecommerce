@@ -41,4 +41,6 @@ urlpatterns = [
     re_path(r'^checkout/address/reuse/$',checkout_address_reuse_view,name='checkout_address_reuse'),
     re_path(r'^register/guest$',guest_login_form,name='guest_register'),
     re_path(r'^get_products/',getProducts,name='get_products'),
+    re_path(r'^theme/$',ecommerceview.dark_mode,name='dark_mdoe'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

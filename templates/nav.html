@@ -37,7 +37,7 @@
             <a class="nav-link" href="{% url 'contact' %}">Contact</a>
           </li>
           <li class="nav-item d-flex justify-content-between">
-            <label class="form-check-label nav-link" for="flexSwitchCheckDefault">Dark Mode</label>
+            <a href="{% url 'dark_mdoe' %}"><label class="form-check-label nav-link dark_theme" for="flexSwitchCheckDefault">Dark Mode</label></a>
             <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">            
         </li>
           {% endif %}
