@@ -14,7 +14,7 @@
             <a class="nav-link" href={% url 'accounts:signup' %}>SignUp</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href={% url 'login' %}>LogIn</a>
+            <a class="nav-link" id='login' href={% url 'login' %}>LogIn</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'product:products' %}">Products</a>
@@ -22,10 +22,6 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'contact' %}">Contact</a>
           </li>
-          <li class="nav-item d-flex justify-content-between">
-            <label class="form-check-label nav-link" for="flexSwitchCheckDefault">Dark Mode</label>
-            <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">            
-        </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">LogOut</a>
@@ -35,10 +31,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-          </li>
-          <li class="nav-item d-flex justify-content-between">
-            <a href="{% url 'dark_mdoe' %}"><label class="form-check-label nav-link dark_theme" for="flexSwitchCheckDefault">Dark Mode</label></a>
-            <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">            
+            {% comment %} <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">             {% endcomment %}
         </li>
           {% endif %}
         </ul>
@@ -54,8 +47,8 @@
             </ul>
           </li> {% endcomment %}
         {% include 'search/snippets/search-form.html' %}
+        <a href="{% url 'dark_mode' %}" class="dark_theme me-5"></a>
         <ul class="navbar-nav me-5">
-         
           <li class="nav-item">
             <a class="nav-link position-relative" href={% url 'carts:cart_home' %}>
                 <i class="bi bi-cart" style="font-size:2rem;"></i>

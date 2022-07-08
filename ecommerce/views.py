@@ -3,13 +3,17 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from . import forms
 from carts.views import is_ajax
+import json
+
+def base_view(request):
+    request.session['dark']=True
 
 class HomeView(TemplateView):
     template_name='home.html'
     
     def get_context_data(self, **kwargs):
-        self.request.session['dark']=True
         context = super().get_context_data(**kwargs)
+        # context['dark']=self.request.session.get('dark')
         return context
     
 def dark_mode(request):

@@ -1,4 +1,6 @@
-// Little Canvas things
+{% with dark=request.session.dark %}
+
+<script>
 var canvas = document.querySelector("#canvas"),
     ctx = canvas.getContext('2d');
 
@@ -14,8 +16,8 @@ var config = {
   colorVariation: 50
 };
 
-// Colors
-if(sessionStorage.getItem('default_theme')=='true'){
+var dark='{{dark}}'
+if(dark=='True'){
 var colorPalette = {
     bg: {r:29,g:29,b:29},
     matter: [
@@ -160,3 +162,5 @@ frame();
 
 // First particle explosion
 initParticles(config.particleNumber);
+</script>
+{% endwith %}
