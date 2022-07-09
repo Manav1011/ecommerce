@@ -1,5 +1,3 @@
-{% with dark=request.session.dark %}
-
 <script>
 var canvas = document.querySelector("#canvas"),
     ctx = canvas.getContext('2d');
@@ -16,8 +14,11 @@ var config = {
   colorVariation: 50
 };
 
-var dark='{{dark}}'
-if(dark=='True'){
+// Colors
+//console.log(json.parse('hello-data'))
+var dark=window.localStorage.getItem('dark_theme')
+if(dark=='dark'){
+    console.log('True')
 var colorPalette = {
     bg: {r:29,g:29,b:29},
     matter: [
@@ -30,6 +31,7 @@ var colorPalette = {
 
 }
 else{
+    console.log('False')
     var colorPalette = {
         bg: {r:255,g:255,b:255},
         matter: [
@@ -163,4 +165,3 @@ frame();
 // First particle explosion
 initParticles(config.particleNumber);
 </script>
-{% endwith %}

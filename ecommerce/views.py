@@ -4,23 +4,24 @@ from django.http import JsonResponse
 from . import forms
 from carts.views import is_ajax
 import json
+from django.contrib.auth import logout
 
-def base_view(request):
-    request.session['dark']=True
-
+dark_theme='dark'
 class HomeView(TemplateView):
     template_name='home.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['dark']=self.request.session.get('dark')
+        context['dark']=self.request.session.get('dark')
         return context
     
 def dark_mode(request):
-    dark=request.session.get('dark')
-    dark=not dark
-    request.session['dark']=dark
-    return JsonResponse({'dark':dark})
+    global dark_theme
+    if 'dark' in dark_theme:
+        dark_theme='light'
+    else:
+        dark_theme='dark'
+    return JsonResponse({'dark_theme':dark_theme})
     
 def ContactView(request):
     contactForm=forms.ContactForm(request.POST or None)    
