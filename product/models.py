@@ -5,6 +5,8 @@ from django.db.models.signals import pre_save,post_save
 from django.utils.text import slugify
 import os
 from django.urls import reverse
+from tags.models import Tag
+import re
 
 def get_filename_ext(filepath):
     base_name=os.path.basename(filepath)
@@ -77,6 +79,20 @@ def product_pre_save_reciever(sender,instance,*args,**kwargs):
     instance.slug=slugify(instance.title)
 
 pre_save.connect(product_pre_save_reciever,sender=Product)
+
+def post_save_reciever(sender,created,instance,*args,**kwargs):
+    if created:
+        def possible_tags(string):
+            without_special_char=re.sub('[!@#$%^&*()-/\:]',"",string)
+            return string,without_special_char
+
+        for i in possible_tags(instance.title):
+            print(instance)
+            t=Tag.objects.create(title=i)
+            t.products.add(instance)
+            
+        
+post_save.connect(post_save_reciever,sender=Product)
     
     
     

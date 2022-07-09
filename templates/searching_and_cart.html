@@ -14,21 +14,19 @@ $(document).ready(function() {
   if ($(window).width() < 1200) {
     guesseditembox.css({
       'position':'absolute',
-      'width':'50%',
+      'width':'70%',
       
     })
     guesseditembox.attr('align','left')
  }
  else {
   guesseditembox.css({
-    'position':'fixed',
-    'left':ect.left,
-    'right':ect.right,
-    'width':offsetWidth,
+    //'position':'fixed',
+    'width':'70%',
     'height':offsetHeight,
     'position':'absolute',
   })
-  //guesseditembox.attr('align','')
+  guesseditembox.attr('align','center')
  }
 
 
@@ -39,11 +37,17 @@ searchInput.keyup(function(event){
     url:"{% url 'get_products' %}",
     success:function(response){
       //console.log(response.products[i].title)
-      guesseditembox.empty();
-      var items=(response.products).concat(response.tag)
+      guesseditembox.empty();      
+      var items=(response.tag)
+      var dark=window.localStorage.getItem('dark_theme')
       for (var i in items){
         if((items[i].title).toLowerCase().indexOf(searchInput.val()) >-1 && searchInput.val().length > 0){
-          guesseditembox.append('<a class="btn link-dark bg-light guesseditem" id='+items[i].id+' value='+items[i].title+'>'+items[i].title+'</a>')
+          if(dark=='dark'){
+          guesseditembox.append('<a class="btn btn-dark border border-light guesseditem" id='+items[i].id+' value='+items[i].title+'>'+items[i].title+'</a>')
+          }
+          else{
+            guesseditembox.append('<a class="btn btn-light border border-dark guesseditem" id='+items[i].id+' value='+items[i].title+'>'+items[i].title+'</a>')
+          }
           document.getElementById(items[i].id).onclick = onClick;
         }
       }
