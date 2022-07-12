@@ -1,18 +1,35 @@
-{% extends 'base.html' %}
 {% load bootstrap4 %}
-{% block content %}
-<div class="container text-center mt-5 card  shadow-lg p-3 mb-5 rounded" id='other-components'>
+<div class="container text-center mt-5 card  border shadow-lg p-3 mb-5 rounded bg-gradient modal-content" id='other-components'>
     <h1>Welcome To Login Page</h1>
-    <form action="" method="post">
+    <form action="{% url 'login' %}" method="post" id='user_login_form'>
         {% csrf_token %}
-        {%bootstrap_form form%}
+        {%bootstrap_form login_form%}
        <br>
-        <input type="submit" value="Login" id="liveToastBtn" class="btn btn-primary">
-    </form>
+        <input type="submit" value="Login" id="login_button" class="btn btn-primary mt-3 form-control">
+        <input type="button" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
     <br>
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        Not having an account? <strong><a href={% url 'accounts:signup' %} class="btn-primary btn">Go to SignUp <i class="bi bi-box-arrow-in-right"></i></a></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+    </form>
+    <script>
+        $(document).ready(function() {
+            var form=$('#user_login_form')
+            form.submit(function(event){
+                event.preventDefault();
+                var thisForm = $(this)
+                var actionEndPoint=thisForm.attr('action')
+                var httpMethod=thisForm.attr('method')
+                var formData=thisForm.serialize();
+                $.ajax({
+                  url: actionEndPoint,
+                  method: httpMethod,
+                  data:formData,  
+                  success: function(response){
+                    $("body").load(`{% url 'home' %}`);
+                  },
+                  error:function(errorData){
+                    console.log(errorData)
+                  }
+                })
+            })
+        })
+    </script>
 </div>
-{% endblock  %}

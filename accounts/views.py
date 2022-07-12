@@ -4,7 +4,37 @@ from django.views.generic import CreateView
 from . import forms
 from django.utils.http import url_has_allowed_host_and_scheme
 from . import models
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponseRedirect,JsonResponse
+from django.contrib.auth import login,authenticate
+from carts.views import is_ajax
+
+
 # Create your views here.
+
+def LoginView(request):
+    form = AuthenticationForm(request=request, data=request.POST)
+    if form.is_valid():
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            print(user)
+            login(request, user)
+            print('logged in')
+            if is_ajax(request):
+                print('ajax request')
+                return JsonResponse({'form':form.cleaned_data})
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            print('User not found')
+    else:
+            # If there were errors, we render the form with these
+            # errors
+        form= AuthenticationForm()
+    return HttpResponseRedirect(reverse('home'))
+    
+
 
 class SignUpView(CreateView):
     form_class=forms.SignUpForm
@@ -16,6 +46,7 @@ class SignUpView(CreateView):
         user.set_password(user.password)
         user.save()
         return super(SignUpView,self).form_valid(form)
+    
     
 def guest_login_form(request):
     form=forms.GuestForm(request.POST or None)

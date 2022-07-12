@@ -89,28 +89,29 @@
         method:refreshCartMethod,
         data:data,
         success:function(data){
+          $("body").load(`{% url 'carts:cart_home' %}`);
           
-          var cartForm=$('.cart_form')
-
-          if(data.product.length>0){
-            var i=0
-            cartProducts.empty();
-            console.log(data.product)
-            var cartRemove=$('.cart_remove_button_form')
-            
-            for(var item in data.product){
-
-              var newcartitemremove=cartRemove.clone();
-              newcartitemremove.find('.remove_form_id').val(data.product[item].id)
-              cartBody.prepend("<tr><th scope=row>"+i+"</th><td><b><a href="+data.product[item].url+"class=link-primary>"+data.product[item].title+"</a></b></td><td>"+data.product[item].price+"</td><td>"+newcartitemremove.html()+"</td></tr>");
-              i++;
-            }
-            cartSubTotal.html('<b>Total: </b>'+data.subtotal);
-            cartTotal.html('<b>Total: </b>'+data.total);
-          }
-          else{
-            window.location.reload();
-          }
+        //  var cartForm=$('.cart_form')
+//
+        //  if(data.product.length>0){
+        //    var i=0
+        //    cartProducts.empty();
+        //    console.log(data.product)
+        //    var cartRemove=$('.cart_remove_button_form')
+        //    
+        //    for(var item in data.product){
+//
+        //      var newcartitemremove=cartRemove.clone();
+        //      newcartitemremove.find('.remove_form_id').val(data.product[item].id)
+        //      cartBody.prepend("<tr><th scope=row>"+i+"</th><td><b><a href="+data.product[item].url+"class=link-primary>"+data.product[item].title+"</a></b></td><td>"+data.product[item].price+"</td><td>"+newcartitemremove.html()+"</td></tr>");
+        //      i++;
+        //    }
+        //    cartSubTotal.html('<b>Total: </b>'+data.subtotal);
+        //    cartTotal.html('<b>Total: </b>'+data.total);
+        //  }
+        //  else{
+        //    window.location.reload();
+        //  }
 
         },
         error:function(errorData){

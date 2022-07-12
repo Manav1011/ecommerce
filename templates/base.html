@@ -8,13 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-<!-- JavaScript Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <!-- CSS only -->
    {% include 'links.html' %}
 
-{% include 'nav.html' %}
+{% include 'nav.html'%}
 <div class="container  d-flex align-items-center justify-content-center mt-3" style="margin-left:auto;">
 <div class="list-group guesseditembox" style='z-index: 99; text-align: center;'></div>
 </div>
@@ -24,14 +21,64 @@
         <div class="container">
         {% include 'themes.js.html' %}
         
-    {% block content %}{% endblock content %}
+    {% block content %}
+    <div class="container text-center mt-5">
+<h1 >This is the home page of eCommerce</h1>
+<h2>live reload is RUNNING</h2>
+{{authentication_form}}
+</div>{% endblock content %}
     
 </div>
 
-<canvas id="canvas" style="position:fixed; top:0; z-index: -1;"></canvas>
+
+<canvas id="canvas" style="position:fixed; top:0; z-index: -1;" class=''></canvas>
 </body>
 <script src="{% static 'simplesocial/js/csrf.ajax.js' %}"></script>
 {% include 'master.js.html' %}
 {% include 'searching_and_cart.html' %}
 
+
+{% comment %} Modals {% endcomment %}
+<div class="modal fade" id="signupmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        {% include 'signup.html' %}
+    </div>
+  </div>
+
+  <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+                {% include 'login.html' %}
+                
+    </div>
+  </div>
+
+  <div class="modal fade" id="contactmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+                {% include 'contact/contact_page.html' %}
+                
+    </div>
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('#logout').click(function(event) {
+        event.preventDefault()
+        $.ajax({
+          url: `{% url 'logout' %}`,
+          method: 'GET',
+          success: function(response){  
+            window.history.pushState({page: "another"}, "another page", "{% url 'home' %}");
+            $('body').load(`{% url 'home' %}`)
+          },
+          error:function(errorData){
+            console.log(errorData)
+          }
+        })
+      })
+    })
+  </script>
+  <noscript>
+    <div class="container-fluid">
+    Please enable javascript to view this page in best condition!!
+  </div>
+  </noscript>
 </html>

@@ -1,10 +1,12 @@
 from ipaddress import ip_address
+import re
 from tabnanny import verbose
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
-
+from .signals import object_viewed_singal
+from .utils import get_client_ip
 
 # Create your models here.
 User=get_user_model()
@@ -25,3 +27,28 @@ class ObjectViewed(models.Model):
         ordering=['-timestamp']
         verbose_name='Object viewed'
         verbose_name_plural ='Objects viewed'
+        
+
+def object_viewed_reciever(sender,instance,request,*args,**kwargs):
+    c_type=ContentType.objects.get_for_model(sender)
+    # print(sender)
+    # print(instance)
+    # print(request)
+    # print(request.user)
+    User=None
+    if request.user.is_authenticated:
+        User=request.user
+    else:
+        User=None
+    new_view_obj=ObjectViewed.objects.create(
+        user=User,
+        content_type=c_type,
+        object_id=instance.id,
+        ip_address=get_client_ip(request),
+        
+        
+    )
+    
+    
+object_viewed_singal.connect(object_viewed_reciever)
+    

@@ -1,12 +1,13 @@
-{% extends 'base.html' %}
+
 {% load bootstrap4 %}
-{% block content %}
-<div class="container text-center mt-5 card  shadow p-3 mb-5 rounded text-dark" id="other-components">
+
+<div class="container text-center mt-5 card  shadow p-3 mb-5 rounded border modal-content" id="other-components">
     <h1>Welcome To SignUp Page</h1>
-<form action="" method="post">
+<form action="{% url 'accounts:signup' %}" method="post">
     {% csrf_token %}
-    {%bootstrap_form form%}
-    <input type="submit" value="SignUp" class="btn btn-primary">
+    {%bootstrap_form signup_form%}
+    <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
+    <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
+
 </form>
 </div>
-{% endblock content %}

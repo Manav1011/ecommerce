@@ -12,15 +12,18 @@
 
 <div class="row mt-5 g">
     {% for i  in products %}
-        <div class="col-sm-12 col-lg-4 col-md-6 col-xl-4" >
-            <div class="card bg-dark container text-center mt-5 card bg-dark shadow p-3 mb-5 rounded" id="other-components" style="width: 18rem;">
-                <img src="{{i.image.url}}" class="card-img-top" alt="..." width="300vh" height="300vh">
-                <div class="card-body">
-                  <h5 class="card-title">Title: {{i.title}}</h5>
-                  <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-primary">Details</a>
-                </div>
-              </div>
-        </div>
+    <div class="col-sm-6 col-xs-12 col-lg-4 col-md-4 col-xl-3">
+        <div class="card shadow-lg p-2 m-2 border border-light" style="width:35vh;" id="other-components">
+          <div style="height:30vh;">
+            <img src="{{i.image.url}}" class="card-img-top" alt="..." width="100%" height="100%">
+          </div>
+            <div class="card-body">
+              <h5 class="card-title">Title: {{i.title |lower}}</h5>
+              <p>Price: {{i.price}} Rs.</p>
+              <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-primary">Details</a>
+            </div>
+          </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock  %}

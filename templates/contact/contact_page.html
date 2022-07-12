@@ -1,20 +1,16 @@
-{% extends 'base.html' %}
-{% load bootstrap4 %}
 {% load static %}
+{% load bootstrap4 %}
 
-{% block content %}
-
-<div class="container text-center mt-5 card  shadow-lg p-3 mb-5 rounded" id='other-components'>
+<div class="container text-center mt-5 card  shadow-lg p-3 mb-5 rounded border bg-gradient modal-content" id='other-components'>
     <h1>Contact Page</h1>
     <form action={% url 'contact' %} method="post" class="contact_form">
         {% csrf_token %}
-        {%bootstrap_form form%}
+        {%bootstrap_form contact_form%}
         
-        <input type="submit" value="Send" class="btn btn-primary mt-2">
+        <input type="submit" value="Send" class="btn btn-primary mt-2 form-control">
+        <input type="button" value="Cancel" class="btn btn-danger mt-2 form-control" data-bs-dismiss="modal" aria-label="Close">
     
     </form>
 </div>
 
 <script src="{% static 'simplesocial/js/contact_form_async.js' %}"></script>
-
-{% endblock content %}

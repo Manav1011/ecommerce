@@ -48,7 +48,11 @@ searchInput.keyup(function(event){
           else{
             guesseditembox.append('<a class="btn btn-light border border-dark guesseditem" id='+items[i].id+' value='+items[i].title+'>'+items[i].title+'</a>')
           }
-          document.getElementById(items[i].id).onclick = onClick;
+          document.getElementById(items[i].id).onclick = function() {
+            console.log(this.id, this.innerHTML);
+            document.getElementById('searchForm').value=this.innerHTML;
+            document.getElementById("search").click();
+            };
         }
       }
 
@@ -96,9 +100,4 @@ searchInput.keydown(function(event){
        })
    })
 })
-const onClick = function() {
-console.log(this.id, this.innerHTML);
-document.getElementById('searchForm').value=this.innerHTML;
-document.getElementById("search").click();
-}
 </script>

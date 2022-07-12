@@ -22,6 +22,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView,LogoutView
 from addresses.views import checkout_address_create_view,checkout_address_reuse_view
 from accounts.views import guest_login_form
+from accounts.views import LoginView as login_view
 from . import views as ecommerceview
 from carts.views import cart_detail_api_view
 from search.views import getProducts

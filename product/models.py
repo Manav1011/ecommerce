@@ -84,15 +84,37 @@ def post_save_reciever(sender,created,instance,*args,**kwargs):
     if created:
         def possible_tags(string):
             without_special_char=re.sub('[!@#$%^&*()-/\:]',"",string)
-            return string,without_special_char
-
-        for i in possible_tags(instance.title):
-            print(instance)
-            t=Tag.objects.create(title=i)
+            if string in without_special_char:
+                return 1
+            else:
+                return string,without_special_char
+        if possible_tags(instance.title)==1:
+            t=Tag.objects.create(title=instance.title)
             t.products.add(instance)
+        else:
+            for i in possible_tags(instance.title):
+                print(instance)
+                t=Tag.objects.create(title=i)
+                t.products.add(instance)
             
         
 post_save.connect(post_save_reciever,sender=Product)
+
+def create_tags(string):
+    without_special_char=re.sub('[!@#$%^&*()-/\:]',"",string)
+    if string == without_special_char:
+        return 1
+    else:
+        return string,without_special_char
+
+def get_product(obj):
+    if create_tags(obj.title)==1:
+        t=Tag.objects.create(title=obj.title)
+        t.products.add(obj)
+    else:
+        for i in create_tags(obj.title):            
+            t=Tag.objects.create(title=i)
+            t.products.add(obj)
     
     
     
