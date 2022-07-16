@@ -15,6 +15,9 @@ from addresses.forms import AddressForm
 
 from django.http import JsonResponse
 
+import razorpay
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 
 def is_ajax(request):
@@ -63,7 +66,7 @@ def cart_update(request):
     return redirect('carts:cart_home')
     # return redirect(product_obj.get_absolute_url())
 
-
+@csrf_exempt
 def checkout_home(request):
     print(request.session.get('guest_email_id'))
     cart_obj, cart_created = cart_obj, new_obj = Cart.objects.new_or_get(
@@ -110,17 +113,36 @@ def checkout_home(request):
             order_obj.save()
 
     next = request.build_absolute_uri
+    
+    
+    #razorpay connection
+    client = razorpay.Client(auth=("rzp_test_ToOn74RDxVzoCc", "92zqvK5I7UCSeXbIqF9aQrCf"))
 
-
+    DATA = {
+        "amount": 100,
+        "currency": "INR",
+        "receipt": "receipt#1",
+        'payment_capture':1,
+        "notes": {
+            "key1": "value3",
+            "key2": "value2"
+        }
+    }
+    {  "razorpay_payment_id": "pay_29QQoUBi66xm2f",  "razorpay_order_id": "order_9A33XWu170gUtm",  "razorpay_signature": "9ef4dffbfd84f1318f6739a3ce19f9d85851857ae648f114332d8401e0949a3d"}
+    payment=client.order.create(data=DATA)
+    
     if request.method=="POST":
+        print('Post request')
         is_done=order_obj.check_done(request)
         if is_done:
             order_obj.mark_paid(request)
             request.session['cart_items']=0
             del request.session['cart_id']
             return redirect('carts:success') 
+        
     context = {
         'object': order_obj,
+        'totalforpayment':order_obj.order_total*100,
         'billing_profile': billing_profile,
         'form': form,
         'next': next,
