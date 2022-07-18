@@ -51,6 +51,11 @@ INSTALLED_APPS = [
     'analyctics',
 ]
 
+MAILCHIMP_API_KEY='143e2f23b1a71fa50573ec629fdfb38a-us18'
+MAILCHIMP_DATA_CENTER='us18'
+MAILCHIMP_EMAIL_LIST_IS=' '
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -132,6 +137,14 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static'),]
 MEDIA_URL='media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'manavshah1011.ms@gmail.com'
+EMAIL_HOST_PASSWORD = 'cexbqytfgautayvi'
 
 LOGIN_REDIRECT_URL ='home'
 LOGOUT_REDIRECT_URL ='home'

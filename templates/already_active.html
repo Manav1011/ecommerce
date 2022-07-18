@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <h1><h1>You link has been expired</h1><h2>You're account should alreade be active</h2></h1>
+        <h2>This page will be closes in: <span id="time">Loading...</span></h2>
+    </div>
+    <script>
+    var time = 5;
+    setInterval(function() {
+      var seconds = time ;
+      var minutes = (time - seconds) / 60;
+      if (seconds.toString().length == 1) {
+        seconds =  seconds;
+      }
+      document.getElementById("time").innerHTML =+ seconds;
+      time--;
+      if (time == 0) {
+        window.location.href = "{% url 'home' %}";
+      }
+    }, 1000);
+    </script>
+</body>
+</html>
+

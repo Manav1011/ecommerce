@@ -24,7 +24,7 @@
     {% block content %}
     <div class="container text-center mt-5">
 <h1 >This is the home page of eCommerce</h1>
-<h2>live reload is RUNNING</h2>
+
 {{authentication_form}}
 </div>{% endblock content %}
     
@@ -34,7 +34,7 @@
 <canvas id="canvas" style="position:fixed; top:0; z-index: -1;" class=''></canvas>
 </body>
 <script src="{% static 'simplesocial/js/csrf.ajax.js' %}"></script>
-{% include 'master.js.html' %}
+
 {% include 'searching_and_cart.html' %}
 
 

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center mt-5">
+    <h1>Activation link has been sent to you email!!</h1>
+    <h2>You'll Be Redirected To Home Page In: <span id="time">Loading...</span></h2>
+</div>
+<script>
+var time = 5;
+setInterval(function() {
+  var seconds = time ;
+  var minutes = (time - seconds) / 60;
+  if (seconds.toString().length == 1) {
+    seconds =  seconds;
+  }
+  document.getElementById("time").innerHTML =+ seconds;
+  time--;
+  if (time == 0) {
+    window.location.href = "{% url 'home' %}";
+  }
+}, 1000);
+</script>
+
+{% endblock content %}

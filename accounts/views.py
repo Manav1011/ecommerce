@@ -1,13 +1,24 @@
+from cgitb import html
+from tkinter import S
 from django.shortcuts import render,redirect
 from django.urls import reverse,reverse_lazy
 from django.views.generic import CreateView
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from . import forms
 from django.utils.http import url_has_allowed_host_and_scheme
 from . import models
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 from django.contrib.auth import login,authenticate
 from carts.views import is_ajax
+from django.utils.html import strip_tags    
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.http import Http404
+from django.contrib.auth.models import User
+from django.template import Template
+
 
 
 # Create your views here.
@@ -36,17 +47,45 @@ def LoginView(request):
     
 
 
-class SignUpView(CreateView):
-    form_class=forms.SignUpForm
-    template_name='signup.html'
-    success_url=reverse_lazy('login')
+def SignUpView(request):
+    form=forms.SignUpForm(request.POST or None)
+    SignUpView.username=request.POST.get('username')
+    if form.is_valid():
+        try:
+            subject='Account Activation From eCommerce Website'
+            html_message = render_to_string('account_activation.html',{'username':request.POST.get('username')})
+            plain_message = strip_tags(html_message)
+            email_from ='manavshah1011.ms@gmail.com'
+            recipirent_list=[request.POST.get('email'),]
+            print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False))
+            form.save()
+            return HttpResponseRedirect(reverse('accounts:check'))
+        except Exception as e:
+            print(e)
+    else:
+        return HttpResponseRedirect(reverse('accounts:exists'))
+
     
-    def form_valid(self, form):
-        user=form.save(commit=False)
-        user.set_password(user.password)
-        user.save()
-        return super(SignUpView,self).form_valid(form)
+@csrf_exempt
+def active_account(request):
+    username=request.POST.get('username')
+    user_obj=User.objects.get(username=username)
+    if user_obj.is_active == False:
+        user_obj.is_active=True
+        user_obj.save()    
+        return HttpResponseRedirect(reverse('accounts:activated'))
+    else:        
+        return HttpResponse(r'Your Account is already activated.')
     
+    
+def activated(request):
+    return render(request,'activated.html')
+
+def account_already_exists(request):
+    return render(request,'account_already_exists.html')
+
+def check_your_email(request):
+    return render(request,'check_your_email.html')
     
 def guest_login_form(request):
     form=forms.GuestForm(request.POST or None)
