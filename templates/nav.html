@@ -20,9 +20,6 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'product:products' %}" id='products'>Products</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact' %}" data-bs-toggle="modal" data-bs-target="#contactmodal" data-bs-whatever="@mdo">Contact</a>
-          </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-link" id='logout' href="{% url 'logout' %}">LogOut</a>
@@ -30,17 +27,30 @@
           <li class="nav-item">
             <a class="nav-link" href={% url 'product:products' %} id='products'>Products</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact' %}" data-bs-toggle="modal" data-bs-target="#contactmodal" data-bs-whatever="@mdo">Contact</a>
-            {% comment %} <input class="form-check-input nav-link mt-2 me-0" type="checkbox" role="switch" id="darkmode" onclick="refresh_page()">             {% endcomment %}
-        </li>
         {% endif %}
         {% if user.is_superuser %}
         <li class="nav-item">
           <a class="nav-link" href={% url 'admin:index' %}>Admin</a>
         </li>
         {% endif %}
-    </ul>     
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% if user.is_authenticated %}
+            <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#change_password" data-bs-whatever="@mdo">Change Password?</a></li>
+            {% else %}
+            <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#resetpassword" data-bs-whatever="@mdo">Forgot Password?</a></li>
+            {% endif %}
+            <li> <a class="dropdown-item" href="{% url 'contact' %}" data-bs-toggle="modal" data-bs-target="#contactmodal" data-bs-whatever="@mdo">Contact</a></li>
+            
+            {% comment %} <li><hr class="dropdown-divider"></li> {% endcomment %}
+            {% comment %} <li><a class="dropdown-item" href="#">Something else here</a></li> {% endcomment %}
+          </ul>
+        </li>
+
+    </ul>         
       {% include 'search/snippets/search-form.html' %}
   
         <ul class="navbar-nav me-5">
@@ -57,6 +67,7 @@
             </a>
           </li>
         </ul>
+
 
             
       </div>

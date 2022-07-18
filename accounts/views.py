@@ -1,5 +1,4 @@
-from cgitb import html
-from tkinter import S
+from django.forms import PasswordInput
 from django.shortcuts import render,redirect
 from django.urls import reverse,reverse_lazy
 from django.views.generic import CreateView
@@ -8,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from . import forms
 from django.utils.http import url_has_allowed_host_and_scheme
 from . import models
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 from django.contrib.auth import login,authenticate
 from carts.views import is_ajax
@@ -17,6 +16,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.http import Http404
 from django.contrib.auth.models import User
+from django.contrib.auth import update_session_auth_hash
 from django.template import Template
 
 
@@ -86,6 +86,49 @@ def account_already_exists(request):
 
 def check_your_email(request):
     return render(request,'check_your_email.html')
+
+
+def username_for_reset_password(request):
+    if request.method=='POST':
+        username_for_reset_password.counter=0
+        user_obj=User.objects.get(username=request.POST.get('username'))
+        subject='Password Reset Link'
+        html_message = render_to_string('reset_password.html',{'domain':request.get_host(),'username':request.POST.get('username')})
+        plain_message = strip_tags(html_message)
+        email_from ='manavshah1011.ms@gmail.com'
+        recipirent_list=[user_obj.email,]
+        print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False))    
+        return JsonResponse({'context':'Form has been submitted'})
+    
+@csrf_exempt
+def reset_password(request):
+    try:
+        username_for_reset_password.counter+=1
+        if username_for_reset_password.counter <= 1:
+            username=request.POST.get('username')
+            password=request.POST.get('password')
+            print(password)
+            user_obj=User.objects.get(username=username)
+            user_obj.set_password(password)
+            user_obj.save()
+            return HttpResponse('Password has been changed')
+        else:
+            return HttpResponse('Password Reset link has been expired')
+    except:
+        print('An exception has occured')
+        return HttpResponse('Password Reset link has been expired')
+    
+    
+def change_password(request):
+    if request.method == 'POST':
+        form=PasswordChangeForm(request.user,request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return JsonResponse({'content':'Password has been changed'})
+    else:
+        form=PasswordChangeForm(request.user)
+        
     
 def guest_login_form(request):
     form=forms.GuestForm(request.POST or None)

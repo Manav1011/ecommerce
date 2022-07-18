@@ -52,14 +52,70 @@
     </div>
   </div>
 
+  <div class="modal fade" id="change_password" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+                {% include 'password_change_form.html' %}
+                
+    </div>
+  </div>
+
   <div class="modal fade" id="contactmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
                 {% include 'contact/contact_page.html' %}
                 
     </div>
   </div>
+
+  <div class="modal fade" id="resetpassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="container text-center mt-5 card  border shadow-lg p-3 mb-5 rounded bg-gradient modal-content resetpasswordmodal" id='other-components'>
+        <form action="{% url 'accounts:username_for_reset_password' %}" method="post" id="submit_username">
+          {% csrf_token %}
+          {%bootstrap_form usernameforpasswordresetform%}
+          <br>
+          <div class="" role="status" id='spinner-div'>
+        <input type="submit" value="Submit" class="btn btn-primary mt-3 form-control resetbutton">
+          </div>
+          
+          <div id='resetcancel'>
+        <input type="button" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
+      </div>
+      </form> 
+      </div>
+      
+</div>
+  </div>
+
   <script>
     $(document).ready(function() {
+      $('#submit_username').submit(function(event){
+        $('.resetpasswordmodal').html(`<div class="alert alert-primary" role="alert">
+          Sending Mail....
+        </div>`)
+          event.preventDefault()
+          thisForm=$(this)
+          actionurl=thisForm.attr('action')
+          formmethod=thisForm.attr('method')
+          data=thisForm.serialize()
+          $.ajax({
+            url:actionurl,
+            method:'POST',
+            data:data,
+            success:function(response){
+              $('#spinner-div').removeClass('spinner-border text-primary')
+              console.log(response)
+              $('.resetpasswordmodal').html(`<div class="alert alert-success" role="alert">
+                Password reset link has been sent to you email
+              </div>`)
+            },
+            error:function(errorData){
+              console.log(errorData)
+            }          
+          })
+      })  
+
+
+
       $('#logout').click(function(event) {
         event.preventDefault()
         $.ajax({

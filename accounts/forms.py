@@ -17,3 +17,8 @@ class GuestForm(forms.ModelForm):
         fields=('email',)
     
     
+class UsernameForPasswordReset(forms.Form):
+    username=forms.CharField(max_length=255)
+    
+    
+    
