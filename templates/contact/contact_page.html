@@ -1,16 +1,49 @@
 {% load static %}
 {% load bootstrap4 %}
 
-<div class="container text-center mt-5 card  shadow-lg p-3 mb-5 rounded border bg-gradient modal-content" id='other-components'>
+<div class="container text-center mt-5 card  shadow-lg p-3 mb-5 rounded border bg-gradient modal-content contactmodal" id='other-components'>
     <h1>Contact Page</h1>
     <form action={% url 'contact' %} method="post" class="contact_form">
         {% csrf_token %}
         {%bootstrap_form contact_form%}
         
         <input type="submit" value="Send" class="btn btn-primary mt-2 form-control">
-        <input type="button" value="Cancel" class="btn btn-danger mt-2 form-control" data-bs-dismiss="modal" aria-label="Close">
+        <input type="button" value="Cancel" class="btn btn-danger mt-2 form-control"data-bs-dismiss="modal" aria-label="Close">
     
     </form>
 </div>
 
-<script src="{% static 'simplesocial/js/contact_form_async.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        var username=`{{request.user.username}}`
+        var email=`{{request.user.email}}`
+        $('#u_name').val(username)
+        $('#e_mail').val(email)
+        var ContactForm=$('.contact_form')
+        var actionEndPoint=ContactForm.attr('action');
+        var method=ContactForm.attr('method');
+        ContactForm.submit(function(event){
+            $('.contactmodal').html(`<div class="alert alert-primary" role="alert">
+                Sending Mail....
+              </div>`)
+            event.preventDefault();
+            var data=ContactForm.serialize();
+            $.ajax({
+                method:method,
+                url:actionEndPoint,
+                data:data,
+                success:function(response) {
+                    ContactForm[0].reset();
+                    $('.contactmodal').html(`<div class="alert alert-success text-center" role="alert">
+                        <h1>Thank You!!</h1>
+                        <h2>Your Response Has Been Sent.<h2>
+                  </div>`)
+                    console.log(response);
+                },
+                error:function(errorData){
+                }
+            })
+        })
+    
+    });
+</script>

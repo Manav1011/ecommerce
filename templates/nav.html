@@ -39,7 +39,8 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             {% if user.is_authenticated %}
-            <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#change_password" data-bs-whatever="@mdo">Change Password?</a></li>
+            <li><a class="dropdown-item" href="{% url 'orders:order_list' %}" >Your Orders</a></li>
+            <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#change_password" data-bs-whatever="@mdo">Change Your Password</a></li>
             {% else %}
             <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#resetpassword" data-bs-whatever="@mdo">Forgot Password?</a></li>
             {% endif %}

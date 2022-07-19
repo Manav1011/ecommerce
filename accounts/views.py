@@ -53,7 +53,7 @@ def SignUpView(request):
     if form.is_valid():
         try:
             subject='Account Activation From eCommerce Website'
-            html_message = render_to_string('account_activation.html',{'username':request.POST.get('username')})
+            html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username')})
             plain_message = strip_tags(html_message)
             email_from ='manavshah1011.ms@gmail.com'
             recipirent_list=[request.POST.get('email'),]

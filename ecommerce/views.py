@@ -1,6 +1,7 @@
 from operator import is_
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from . import forms
 from carts.views import is_ajax
@@ -33,9 +34,20 @@ def dark_mode(request):
     
 def ContactView(request):
     contactForm=forms.ContactForm(request.POST or None)    
-    if contactForm.is_valid():
+    if contactForm.is_valid() and request.method == 'POST':
         form_data=contactForm.cleaned_data
-        print(form_data)
-        if is_ajax(request):
-            return JsonResponse({'form_data':form_data})
-    return render(request,'contact/contact_page.html',context={'form':contactForm})
+        Username=request.POST.get('Username')
+        Email=request.POST.get('Email')
+        Content=request.POST.get('Content')
+        try:
+            subject=f'Response from {Username}'
+            message=f'Email:{Email}\n{Content}'
+            email_from ='manavshah1011.ms@gmail.com'
+            recipirent_list=['ecommerce.django.manavshah@gmail.com',]
+            print(send_mail(subject, message, email_from, recipirent_list,fail_silently=False))
+            return JsonResponse({'success':True})
+        except Exception as e:
+            return JsonResponse({'success':False})
+    else:
+        contactForm=forms.ContactForm()
+        return JsonResponse({'success':False})

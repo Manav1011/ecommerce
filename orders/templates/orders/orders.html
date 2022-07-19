@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<table class="table text-center" id='table'>
+    <thead>
+      <tr>
+        <th scope="col">Order ID</th>
+        <th scope="col">Billing Profile</th>
+        <th scope="col">Status</th>
+        <th scope="col">Product Count</th>
+        <th scope="col">Order Total</th>
+        <th scope="col">Timestamp</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for i in object %}
+      <tr>
+        <th scope="row">{{i.order_id}}</th>
+        <td>{{i.billing_profile}}</td>
+        <td>{{i.status}}</td>
+        <td>{{i.cart.products.all.count}}</td>
+        <td>{{i.order_total}}</td>
+        <td>{{i.timestamp}}</td>
+        <td><a href="{% url 'orders:delete_order' pk=i.pk %}" class="btn btn-outline-danger btn-sm delete_order">Delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <script>    
+    $(document).ready(function() {
+        var deletes=$('.delete_order');
+        deletes.click(function(event){
+            event.preventDefault();
+            $.ajax({
+                url:deletes.attr('href'),
+                method:'GET',
+                success:function(response){
+                    console.log(response)
+                    $("body").load(`{% url 'orders:order_list' %}`);
+                },
+                error:function(errorData){
+                    console.log(errorData)
+                }
+            })
+        })
+    })    
+    </script>
+  </table>
+{% endblock content %}

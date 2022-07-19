@@ -1,3 +1,4 @@
+from asyncio import shield
 from django.db import models
 from carts.models import Cart
 import random
@@ -5,7 +6,9 @@ import string
 from addresses.models import Address
 from billing.models import BillingProfile
 from decimal import Decimal
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save,post_delete
+from django.dispatch import receiver
+import datetime
 
 # Create your models here.
 
@@ -30,6 +33,30 @@ class OrderManager(models.Manager):
             created = False
         return obj, created
 
+class Order_Log(models.Model):
+    Billing_profile = models.ForeignKey(
+        BillingProfile, on_delete=models.CASCADE, blank=True, null=True,related_name='billingprofile')
+    Order_id = models.CharField(
+        max_length=255, unique=True, blank=True, null=True)
+    Shipping_address = models.ForeignKey(
+        Address,related_name='shippingaddress',on_delete=models.CASCADE, null=True, blank=True)
+    Billing_address = models.ForeignKey(
+        Address,related_name='billingaddress', on_delete=models.CASCADE, null=True, blank=True)
+    Cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    Status = models.CharField(
+        max_length=255, default='created', choices=ORDER_STATUS_CHOICES)
+    post_status=models.CharField(max_length=255, default='deleted')
+    Shipping_total = models.DecimalField(
+        max_digits=100, default=5.99, decimal_places=2)
+    Order_total = models.DecimalField(
+        max_digits=100, default=0.00, decimal_places=2)
+    Active = models.BooleanField(default=True)
+    Timestamp=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    
+    
+    def __str__(self):
+        return f'Deleted Order: {self.Order_id}'
+    
 
 class Order(models.Model):
     billing_profile = models.ForeignKey(
@@ -48,6 +75,7 @@ class Order(models.Model):
     order_total = models.DecimalField(
         max_digits=100, default=0.00, decimal_places=2)
     active = models.BooleanField(default=True)
+    timestamp=models.DateTimeField(auto_now_add=True,blank=True,null=True)
 
     def __str__(self):
         return self.order_id
@@ -80,6 +108,22 @@ class Order(models.Model):
         return self.status
          
 
+@receiver(post_delete,sender=Order)
+def post_delete_order(instance,sender,*args,**kwargs):
+    Order_Log.objects.create(
+        Billing_profile=instance.billing_profile,
+        Order_id=instance.order_id,
+        Shipping_address=instance.shipping_address,
+        Billing_address=instance.billing_address,
+        Cart=instance.cart,
+        Status=instance.status,
+        Shipping_total=instance.shipping_total,
+        Order_total=instance.order_total,
+        Active=instance.active,
+        Timestamp=instance.timestamp
+    )
+    print('Order Log Created')
+    
 
 def pre_save_order_id(sender, instance, *args, **kwargs):
     print("pre save order id")

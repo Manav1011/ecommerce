@@ -34,6 +34,7 @@ urlpatterns = [
     re_path(r'^login/$',LoginView.as_view(template_name='login.html'),name='login'),
     re_path(r'^logout/$',LogoutView.as_view(),name='logout'),
     path('accounts/',include('accounts.urls')),
+    path('orders/',include('orders.urls')),
     path('product/',include('product.urls')),
     re_path(r'^search/$',include('search.urls')),
     re_path(r'^api/cart/$',cart_detail_api_view,name='api_cart'),
