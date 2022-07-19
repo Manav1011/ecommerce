@@ -8,10 +8,9 @@
           <p class="card-text">Description: {{products.description}}</p>
           <span class='card-text'>Price: {{products.price}}</span><br>
           <br>
-          <a href='{% url 'product:products' %}' class="btn btn-primary">Go Back</a>
-          <br>
-          <br>
           {% include 'product/update_cart.html' with product=object cart=cart %}
+          <br>
+          <a href='{% url 'product:products' %}' class="btn btn-outline-primary form-control">Go Back</a>
         </div>
     </div>
 </div>

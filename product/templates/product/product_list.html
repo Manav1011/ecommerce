@@ -12,7 +12,9 @@
                 <div class="card-body">
                   <h5 class="card-title">Title: {{i.title |lower}}</h5>
                   <p>Price: {{i.price}} Rs.</p>
-                  <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-primary">Details</a>
+                  {% include 'product/update_cart.html' with product=i cart=cart %}
+                  <br>
+                  <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-outline-primary form-control">Details</a>
                 </div>
               </div>
         </div>

@@ -28,7 +28,6 @@ def cart_detail_api_view(request):
     product=[{'id':x.id,'title':x.title, 'price':x.price,'url':x.get_absolute_url()} for x in cart_obj.products.all()]
     cart_data={'product':product,'subtotal':cart_obj.subtotal, 'total':cart_obj.total}
     if is_ajax(request):
-        print("Json request sent")
         return JsonResponse(cart_data)
     return redirect('carts:cart_home')
 

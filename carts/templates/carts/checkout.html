@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+{% load static %}
 
 {% if not billing_profile %}
         <div class="container m-5">
@@ -62,7 +63,7 @@
             <form action="{% url 'carts:checkout' %}" method="POST">
                 {% csrf_token %}
                 <script
-                    src="https://checkout.razorpay.com/v1/checkout.js"
+                    src="{% static 'simplesocial/js/checkout.js' %}"
                     data-key="rzp_test_ToOn74RDxVzoCc" // Enter the Test API Key ID generated from Dashboard → Settings → API Keys
                     data-amount="{{totalforpayment}}" // Amount is in currency subunits. Hence, 29935 refers to 29935 paise or ₹299.35.
                     data-currency="INR"// You can accept international payments by changing the currency code. Contact our Support Team to enable International for your account

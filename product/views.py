@@ -14,6 +14,11 @@ class ProductList(ListView):
     def get_queryset(self):
         queryset=Product.objects.all().order_by('-title')
         return queryset
+    def get_context_data(self,*args,**kwargs):
+        context=super().get_context_data(*args,**kwargs) 
+        cart_obj,new_obj=Cart.objects.new_or_get(self.request)
+        context['cart']=cart_obj
+        return context
 
 class ProductDetail(ObjectViewedMixin,DetailView):
     model=Product
