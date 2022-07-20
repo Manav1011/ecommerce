@@ -49,7 +49,6 @@ def LoginView(request):
 
 def SignUpView(request):
     form=forms.SignUpForm(request.POST or None)
-    SignUpView.username=request.POST.get('username')
     if form.is_valid():
         try:
             subject='Account Activation From eCommerce Website'
@@ -62,13 +61,13 @@ def SignUpView(request):
             return HttpResponseRedirect(reverse('accounts:check'))
         except Exception as e:
             print(e)
+            return HttpResponseRedirect(reverse('accounts:exists'))
     else:
         return HttpResponseRedirect(reverse('accounts:exists'))
 
     
-@csrf_exempt
-def active_account(request):
-    username=request.POST.get('username')
+def active_account(request,username):
+    username=username
     user_obj=User.objects.get(username=username)
     if user_obj.is_active == False:
         user_obj.is_active=True
@@ -93,30 +92,37 @@ def username_for_reset_password(request):
         username_for_reset_password.counter=0
         user_obj=User.objects.get(username=request.POST.get('username'))
         subject='Password Reset Link'
-        html_message = render_to_string('reset_password.html',{'domain':request.get_host(),'username':request.POST.get('username')})
+        html_message = render_to_string('reset_password_link.html',{'domain':request.get_host(),'username':request.POST.get('username')})
         plain_message = strip_tags(html_message)
         email_from ='manavshah1011.ms@gmail.com'
         recipirent_list=[user_obj.email,]
         print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False))    
         return JsonResponse({'context':'Form has been submitted'})
     
-@csrf_exempt
+def reset_password_page(request,username):
+    context={
+        'username':username
+    }
+    return render(request, 'reset_password.html',context)
+
+
 def reset_password(request):
-    try:
-        username_for_reset_password.counter+=1
-        if username_for_reset_password.counter <= 1:
-            username=request.POST.get('username')
-            password=request.POST.get('password')
-            print(password)
-            user_obj=User.objects.get(username=username)
-            user_obj.set_password(password)
-            user_obj.save()
-            return HttpResponse('Password has been changed')
-        else:
-            return HttpResponse('Password Reset link has been expired')
-    except:
-        print('An exception has occured')
-        return HttpResponse('Password Reset link has been expired')
+    if request.method == 'POST':
+        try:
+            username_for_reset_password.counter+=1
+            if username_for_reset_password.counter <= 1:
+                username=request.POST.get('username')
+                password=request.POST.get('password')
+                print(password)
+                user_obj=User.objects.get(username=username)
+                user_obj.set_password(password)
+                user_obj.save()
+                return JsonResponse({'content':'Password has been changed','result':'success'})
+            else:
+                return JsonResponse({'content':'Password Reset link has been expired','result':'error'})
+        except:
+            print('An exception has occured')
+            return JsonResponse({'content':'Password Reset link has been expired' ,'result':'error'})
     
     
 def change_password(request):

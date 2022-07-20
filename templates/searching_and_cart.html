@@ -41,7 +41,7 @@ searchInput.keyup(function(event){
       var items=(response.tag)
       var dark=window.localStorage.getItem('dark_theme')
       for (var i in items){
-        if((items[i].title).toLowerCase().indexOf(searchInput.val()) >-1 && searchInput.val().length > 0){
+        if((items[i].title).indexOf(searchInput.val()) >-1 && searchInput.val().length > 0){
           if(dark=='dark'){
           guesseditembox.append('<a class="btn btn-dark border border-light guesseditem" id='+items[i].id+' value='+items[i].title+'>'+items[i].title+'</a>')
           }
