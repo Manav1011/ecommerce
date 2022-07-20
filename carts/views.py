@@ -67,6 +67,7 @@ def cart_update(request):
 
 @csrf_exempt
 def checkout_home(request):
+    context={}
     print(request.session.get('guest_email_id'))
     cart_obj, cart_created = cart_obj, new_obj = Cart.objects.new_or_get(
         request)
@@ -100,6 +101,9 @@ def checkout_home(request):
     
     if billing_profile is not None:
         order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)        
+        context={
+            'totalforpayment':order_obj.order_total*100,
+        }
         if request.user.is_authenticated:
             address_qs=Address.objects.filter(billing_profile=billing_profile)    
         if shipping_address_id:
@@ -131,7 +135,6 @@ def checkout_home(request):
     payment=client.order.create(data=DATA)
     
     if request.method=="POST":
-        print('Post request')
         is_done=order_obj.check_done(request)
         if is_done:
             order_obj.mark_paid(request)
@@ -139,9 +142,8 @@ def checkout_home(request):
             del request.session['cart_id']
             return redirect('carts:success') 
         
-    context = {
+    context.update({
         'object': order_obj,
-        'totalforpayment':order_obj.order_total*100,
         'billing_profile': billing_profile,
         'form': form,
         'next': next,
@@ -149,7 +151,7 @@ def checkout_home(request):
         'address_form':address_form,
         'billing_address_form':billing_address_form,
         'address_qs':address_qs,
-    }
+    })
 
     return render(request, 'carts/checkout.html', context)
 

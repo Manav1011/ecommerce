@@ -29,7 +29,7 @@
       </tr>
       <tr>
         <td colspan="3"></td>
-        <td><span class="total"><b>Total: </b>{{cart.total}}</span></td>
+        <td><span class="total"><b>Total: </b>{{cart.total|floatformat:2}}</span></td>
       </tr>
       <tr>
         <td colspan="4"><a href={% url 'carts:checkout' %} class="btn col-12 btn-outline-success">Checkout</a></td>

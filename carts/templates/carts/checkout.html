@@ -6,7 +6,6 @@
 {% if not billing_profile %}
         <div class="container m-5">
         <div class="row">
-        <div class="col-12 col-md-6 ">
             <p class="lead">Login</p>
 
             <form action={% url 'carts:checkout' %} method="post">
@@ -20,7 +19,7 @@
 
         </div>
 
-        <div class="col-12 col-md-6 ">
+        <div class="row">
             <p class="lead">Continue as guest</p>
             <form action={% url 'guest_register' %} method="post">
                 {% if next %}
@@ -39,16 +38,21 @@
         <hr>
         <div class="row">
             {% include 'addresses/form.html' with address_type='shipping'%}
-
+            </div>
+            <div class="row">
             {% include 'addresses/previous_addresses.html' with address_qs=address_qs next_url=next address_type='shipping'%}
+            </div>
         </div>
         {% elif not object.billing_address %}
         <h3 class="text-center">Billing Address Form</h3>
         <hr>
         <div class="row">
             {% include 'addresses/form.html' with address_type='billing'%}
+        </div>
+        <div class="row">
             {% include 'addresses/previous_addresses.html' with address_qs=address_qs next_url=next address_type='billing'%}
-            </div
+        </div>
+        </div>
         {% else %}
         <div class="container text-center shadow-lg pb-3">
 

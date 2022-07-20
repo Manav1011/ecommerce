@@ -1,7 +1,13 @@
 <script>
   $(document).ready(function() {
-
- $('.dark_theme').html(window.localStorage.getItem('theme_icon'))
+if(window.localStorage.getItem('theme_icon')){
+  $('.dark_theme').html(window.localStorage.getItem('theme_icon'))
+}
+else{
+  window.localStorage.setItem('theme_icon',`<span class="btn btn-outline-dark" style="font-size: 1rem;">Dark Mode:OFF</span>`)
+  $('.dark_theme').html(window.localStorage.getItem('theme_icon'))
+}
+ 
  document.getElementById("nav").classList.add(window.localStorage.getItem('nav-class'));
         console.log('navbar-class ',document.getElementById("nav").classList )
         document.getElementById('content').classList.add(window.localStorage.getItem('body-class-text'),window.localStorage.getItem('body-class-bg'));
