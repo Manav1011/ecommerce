@@ -23,7 +23,7 @@
                   method: httpMethod,
                   data:formData,  
                   success: function(response){
-                    $("body").load(`{% url 'home' %}`);
+                    window.location.reload();
                   },
                   error:function(errorData){
                     console.log(errorData)

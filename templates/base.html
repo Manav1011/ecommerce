@@ -93,13 +93,13 @@
           Sending Mail....
         </div>`)
           event.preventDefault()
-          thisForm=$(this)
-          actionurl=thisForm.attr('action')
-          formmethod=thisForm.attr('method')
-          data=thisForm.serialize()
+          var thisForm=$(this)
+          var actionuvarrl=thisForm.attr('action')
+          var formmethod=thisForm.attr('method')
+          var data=thisForm.serialize()
           $.ajax({
-            url:actionurl,
-            method:'POST',
+            url:actionuvarrl,
+            method:formmethod,
             data:data,
             success:function(response){
               $('#spinner-div').removeClass('spinner-border text-primary')
@@ -123,7 +123,7 @@
           method: 'GET',
           success: function(response){  
             window.history.pushState({page: "another"}, "another page", "{% url 'home' %}");
-            $('body').load(`{% url 'home' %}`)
+            window.location.reload();
           },
           error:function(errorData){
             console.log(errorData)

@@ -88,7 +88,8 @@ def check_your_email(request):
 
 
 def username_for_reset_password(request):
-    if request.method=='POST':
+    try:
+        print(request.POST)
         username_for_reset_password.counter=0
         user_obj=User.objects.get(username=request.POST.get('username'))
         subject='Password Reset Link'
@@ -96,8 +97,11 @@ def username_for_reset_password(request):
         plain_message = strip_tags(html_message)
         email_from ='manavshah1011.ms@gmail.com'
         recipirent_list=[user_obj.email,]
-        print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False))    
-        return JsonResponse({'context':'Form has been submitted'})
+        print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False)) 
+        return HttpResponse('Form has been submitted')
+    except Exception as e:
+        print(e)
+        return HttpResponse('Form has not been submitted')
     
 def reset_password_page(request,username):
     context={

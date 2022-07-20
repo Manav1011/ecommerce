@@ -42,6 +42,9 @@
             <li><a class="dropdown-item" href="{% url 'orders:order_list' %}" >Your Orders</a></li>
             <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#change_password" data-bs-whatever="@mdo">Change Your Password</a></li>
             {% else %}
+            {% if request.session.guest_email_id %}
+            <li><a class="dropdown-item" href="{% url 'orders:order_list' %}" >Your Orders</a></li>
+            {% endif %}
             <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#resetpassword" data-bs-whatever="@mdo">Forgot Password?</a></li>
             {% endif %}
             <li> <a class="dropdown-item" href="{% url 'contact' %}" data-bs-toggle="modal" data-bs-target="#contactmodal" data-bs-whatever="@mdo">Contact</a></li>
