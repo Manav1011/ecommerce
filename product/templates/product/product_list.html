@@ -1,25 +1,68 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-<div class="container-fluid mt-2">
-<div class="row">
-    {% for i  in products %}
-        <div class="col-sm-6 col-xs-12 col-lg-4 col-md-4 col-xl-3">
-            <div class="card shadow-lg p-2 m-2 border border-light bg-gradient" style="width:35vh; margin" id="other-components">
-              <div style="height:30vh;">
-                <img src="{{i.image.url}}" class="card-img-top" alt="..." width="100%" height="100%">
+
+  <div class="alert bg-dark" role="alert">
+    Wearable Items
+  </div>
+<div class="container-fluid mt-2 scrolling-wrapper mt-5">
+    {% for i  in products %}    
+    {% if i.catagories == 'wearable' %}
+            <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
+              <div style="height:25vh;">
+                <img src="{{i.image.url}}" class="card-img-top" alt="..." style="height: 100%; width: 100%; object-fit: contain'">
               </div>
                 <div class="card-body">
-                  <h5 class="card-title">Title: {{i.title |lower}}</h5>
-                  <p>Price: {{i.price}} Rs.</p>
+                  <p class="card-title text-center" style='font-size: 0.9rem;'>{{i.title |lower}}</p>
                   {% include 'product/update_cart.html' with product=i cart=cart %}
                   <br>
                   <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-outline-primary form-control">Details</a>
                 </div>
               </div>
-        </div>
+              {% endif %}
     {% endfor %}
+</div>
+<div class="alert bg-dark" role="alert">
+  Digital Items
+</div>
+<div class="container-fluid mt-2 scrolling-wrapper mt-5">
+  {% for i  in products %}    
+  {% if i.catagories == 'digital' %}
+          <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
+            <div style="height:25vh;">
+              <img src="{{i.image.url}}" class="card-img-top" alt="..." style="height: 100%; width: 100%; object-fit: contain'">
+            </div>
+              <div class="card-body">
+                <h5 class="card-title text-center" style='font-size: 0.9rem;'>{{i.title |lower}}</h5>
+                {% include 'product/update_cart.html' with product=i cart=cart %}
+                <br>
+                <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-outline-primary form-control">Details</a>
+              </div>
+            </div>
+            {% endif %}
+  {% endfor %}
+</div>
+<style>
+  .scrolling-wrapper{
+  
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    float: none;
     
-</div>
-</div>
+  }
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+  }
+  
+  
+  .scrolling-wrapper .card {
+    height: 100%;
+    width: 100%;
+    
+    display: inline-block;
+  }
+</style>
+
 {% endblock content%}

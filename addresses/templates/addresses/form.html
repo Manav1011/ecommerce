@@ -1,5 +1,5 @@
 {% load bootstrap4 %}
-<div class="container col-6 text-center shadow rounded p-3 text-light">
+<div class="container col-12 text-center shadow rounded p-3 text-light">
     <form action={% url 'checkout_address_create' %} method="post">
         {% csrf_token %}
         {% if next %}

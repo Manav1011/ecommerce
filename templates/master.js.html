@@ -16,9 +16,8 @@ var config = {
 
 // Colors
 //console.log(json.parse('hello-data'))
-var dark=window.localStorage.getItem('dark_theme')
-if(dark=='dark'){
-    console.log('True')
+{% comment %} var dark=window.localStorage.getItem('dark_theme') {% endcomment %}
+
 var colorPalette = {
     bg: {r:29,g:29,b:29},
     matter: [
@@ -28,22 +27,6 @@ var colorPalette = {
       {r:253,g:238,b:152} // totesASun
     ]
 };
-
-}
-else{
-    console.log('False')
-    var colorPalette = {
-        bg: {r:255,g:255,b:255},
-        matter: [
-          {r:36,g:18,b:42}, // darkPRPL
-          {r:78,g:36,b:42}, // rockDust
-          {r:252,g:178,b:96}, // solorFlare
-          {r:253,g:238,b:152} // totesASun
-        ]
-    };
-    
-    
-}
 
 // Some Variables hanging out
 var particles = [],

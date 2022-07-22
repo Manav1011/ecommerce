@@ -1,13 +1,65 @@
 
 {% load bootstrap4 %}
 
-<div class="container text-center mt-5 card  shadow p-3 mb-5 rounded border modal-content" id="other-components">
+<div class="container text-center mt-5 card  shadow p-3 mb-5 border shadow-lg p-3 mb-5 rounded bg-gradient modal-content signupdiv" id="other-components">
     <h1>Welcome To SignUp Page</h1>
-<form action="{% url 'accounts:signup' %}" method="post">
+<form action="{% url 'accounts:signup' %}" method="post" id='signupform'>
     {% csrf_token %}
-    {%bootstrap_form signup_form%}
+    <span>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+    {%bootstrap_field signup_form.username %}
+    {%bootstrap_field signup_form.email %}
+    <br>
+    <ul><li>Your password can’t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li><li>Your password can’t be entirely numeric.</li></ul>
+    {%bootstrap_field signup_form.password1 %}
+    {%bootstrap_field signup_form.password2 %}
+
     <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
     <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
-
 </form>
+<script>
+    $(document).ready(function(){
+        var form=$('#signupform')
+        var url=form.attr('action');
+        method=form.attr('method');
+        form.submit(function(event){
+            event.preventDefault()
+            data=form.serialize()
+            $.ajax({
+                url:url,
+                method:method,
+                data:data,
+                success:function(response){
+                    if(response.type=='success'){
+                        window.location.href=`{% url 'accounts:check' %}`
+                    }
+                    else{
+                        
+                        console.log(response.errors)
+                       
+                        $('.signupdiv').html(`<div class="alert alert-danger" role="alert">
+                            <li>${response.errors}<li>
+                          </div>`)
+                       setTimeout(function(){
+                        $('.signupdiv').html(`
+                        <h1>Welcome To SignUp Page</h1>
+                        <form action="{% url 'accounts:signup' %}" method="post" id='signupform'>
+                            {% csrf_token %}
+                            <span>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                            {%bootstrap_field signup_form.username %}
+                            {%bootstrap_field signup_form.email %}
+                            <br>
+                            <ul><li>Your password can’t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li><li>Your password can’t be entirely numeric.</li></ul>
+                            {%bootstrap_field signup_form.password1 %}
+                            {%bootstrap_field signup_form.password2 %}
+                        
+                            <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
+                            <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
+                        </form>`)
+                       },3000)
+                    }
+                }
+            });
+        })
+    });
+</script>
 </div>

@@ -1,23 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<table class="table text-center" id='table'>
+<table class="table text-center ordertable" id='table'>
     <thead>
       <tr>
-        <th scope="col">Order ID</th>
-        <th scope="col">Billing Profile</th>
-        <th scope="col">Status</th>
-        <th scope="col">Product Count</th>
-        <th scope="col">Order Total</th>
-        <th scope="col">Timestamp</th>
-        <th scope="col">Action</th>
+        <th>Order ID</th>
+        <th>Status</th>
+        <th>Product Count</th>
+        <th>Order Total</th>
+        <th>Timestamp</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
         {% for i in object %}
       <tr>
-        <th scope="row">{{i.order_id}}</th>
-        <td>{{i.billing_profile}}</td>
+        <th>{{i.order_id}}</th> 
         <td>{{i.status}}</td>
         <td>{{i.cart.products.all.count}}</td>
         <td>{{i.order_total}}</td>
@@ -28,6 +26,22 @@
     </tbody>
     <script>    
     $(document).ready(function() {
+      if ($(window).width() < 900) {
+        console.log('<900')
+        $('table').css({'font-size':'10px'});
+    }
+    else if($(window).width() < 1200){
+      $('table').css({'font-size':'20px'});
+
+    }
+    else if($(window).width() < 800){
+      $('table').css({'font-size':'5px'});
+
+    }
+    else if($(window).width() < 400){
+      $('table').css({'font-size':'1px'});
+
+    }
         var deletes=$('.delete_order');
         deletes.click(function(event){
             event.preventDefault();

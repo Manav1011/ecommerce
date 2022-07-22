@@ -15,12 +15,21 @@
 <div class="container  d-flex align-items-center justify-content-center mt-3" style="margin-left:auto;">
 <div class="list-group guesseditembox" style='z-index: 99; text-align: center;'></div>
 </div>
+<style>
+  
+  tabled,td,tr{
+    color:white;
+  }
+  #other-components{
+    background-color:black;
+    color:white;
+  }
+</style>
 </head>
 
-<body id="content">
-        <div class="container">
-        {% include 'themes.js.html' %}
-        
+<body id="content" class='text-white'>
+        <div class="container text-center">
+        {% comment %} {% include 'themes.js.html' %} {% endcomment %}        
     {% block content %}
     <div class="container text-center mt-5">
 <h1 >This is the home page of eCommerce</h1>
@@ -32,6 +41,7 @@
 
 
 <canvas id="canvas" style="position:fixed; top:0; z-index: -1;" class=''></canvas>
+{% include 'master.js.html' %}
 </body>
 <script src="{% static 'simplesocial/js/csrf.ajax.js' %}"></script>
 
