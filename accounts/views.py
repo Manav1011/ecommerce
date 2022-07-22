@@ -1,3 +1,5 @@
+from distutils.command.clean import clean
+from tkinter import S
 from django.forms import PasswordInput
 import json
 from django.shortcuts import render,redirect
@@ -33,61 +35,50 @@ def LoginView(request):
             print(user)
             login(request, user)
             print('logged in')
-            if is_ajax(request):
-                print('ajax request')
-                return JsonResponse({'form':form.cleaned_data})
             return HttpResponseRedirect(reverse('home'))
         else:
-            print('User not found')   
+            return JsonResponse({'errors':form.errors.as_json(),'type':'error'},safe=False)
     else:
-        form= AuthenticationForm()
+        return JsonResponse({'errors':form.errors.as_json(),'type':'error'},safe=False)
     return HttpResponseRedirect(reverse('home'))
     
 
 
 def SignUpView(request):
-    form=forms.SignUpForm(request.POST or None)    
-    if form.is_valid():
+    SignUpView.form=forms.SignUpForm(request.POST or None)    
+    if SignUpView.form.is_valid():
         try:
             subject='Account Activation From eCommerce Website'
             html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username')})
             plain_message = strip_tags(html_message)
             email_from ='manavshah1011.ms@gmail.com'
-            recipirent_list=[request.POST.get('email'),]
-            print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False))
-            form.save()
+            send_mail(subject, plain_message, email_from, [request.POST.get('email'),], html_message=html_message,fail_silently=False)
+            SignUpView.active=False
             return JsonResponse({'url':'accounts:check','type':'success'})
-        except Exception as e:
-            print(e)
-            return HttpResponseRedirect(reverse('accounts:exists'))
+        except:
+            print('Exception Occured')
+            return JsonResponse({'Exception':'occured'})
     else:
-        d=form.errors.as_data()
-        errors=[]
-        for i in d.values():
-            for j in i:
-                errors.append(str(j))
-        return JsonResponse({'errors':errors,'type':'error'},safe=False)
+        return JsonResponse({'errors':SignUpView.form.errors.as_json(),'type':'error'},safe=False)
 
     
 def active_account(request,username):
     username=username
-    user_obj=User.objects.get(username=username)
-    if user_obj.is_active == False:
-        user_obj.is_active=True
-        user_obj.save()    
-        return HttpResponseRedirect(reverse('accounts:activated'))
-    else:        
+    try:
+        SignUpView.form.save(commit=True)
+        user_obj=User.objects.get(username=username)
+        if SignUpView.active == False:
+            SignUpView.active=True
+            return HttpResponseRedirect(reverse('accounts:activated'))
+        else:        
+            return HttpResponse(r'Your Account is already activated.')
+    except:
         return HttpResponse(r'Your Account is already activated.')
     
-    
+
 def activated(request):
     return render(request,'activated.html')
 
-def account_already_exists(request):
-    return render(request,'account_already_exists.html')
-
-def check_your_email(request):
-    return render(request,'check_your_email.html')
 
 
 def username_for_reset_password(request):

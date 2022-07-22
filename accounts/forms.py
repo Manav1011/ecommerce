@@ -9,6 +9,18 @@ class UserCreateForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget=forms.TextInput(attrs={
+            'pattern':'[A-Za-z0-9@_+-.]+',
+            'id':'signupusername',
+        })
+        self.fields['password1'].widget=forms.PasswordInput(attrs={
+            'id':'signuppassword',
+            'minlength':'8'
+        })
+        self.fields['password1'].widget=forms.PasswordInput(attrs={
+            'id':'signupconfirmpassword',
+            'minlength':'8'
+        })
 
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = None

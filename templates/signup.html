@@ -23,6 +23,9 @@
         method=form.attr('method');
         form.submit(function(event){
             event.preventDefault()
+            $('.signupdiv').html(`<div class="alert alert-primary" role="alert">
+                Sending Mail....
+              </div>`)
             data=form.serialize()
             $.ajax({
                 url:url,
@@ -30,17 +33,17 @@
                 data:data,
                 success:function(response){
                     if(response.type=='success'){
-                        window.location.href=`{% url 'accounts:check' %}`
-                    }
-                    else{
-                        
-                        console.log(response.errors)
-                       
-                        $('.signupdiv').html(`<div class="alert alert-danger" role="alert">
-                            <li>${response.errors}<li>
-                          </div>`)
-                       setTimeout(function(){
                         $('.signupdiv').html(`
+                        <div class="alert alert-success" role="alert">
+                            <li>Activation link has been sent to you email!!</li>
+                        </div>
+                        <div class="alert alert-danger" role="alert">
+                            <li>If you did not recieve the activation link</li>
+                        <li>Then please provide a valid email <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div></li>
+                        </div>
+                        `)
+                        $('#fillagain').click(function(){
+                            $('.signupdiv').html(`
                         <h1>Welcome To SignUp Page</h1>
                         <form action="{% url 'accounts:signup' %}" method="post" id='signupform'>
                             {% csrf_token %}
@@ -55,7 +58,58 @@
                             <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
                             <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
                         </form>`)
-                       },3000)
+                        })
+                    }
+                    else if(response.Exception =='occured'){
+                        $('.signupdiv').html(`<div class="alert alert-danger" role="alert">
+                            <li>Either You Have Typed A Wrong Email Or Your Account Already Exists</li>
+                        </li>Please provide a valid email if already provided check your email for the activation link</li>
+                        <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div>
+                        </div>
+                        `)
+                        $('#fillagain').click(function(){
+                            $('.signupdiv').html(`
+                        <h1>Welcome To SignUp Page</h1>
+                        <form action="{% url 'accounts:signup' %}" method="post" id='signupform'>
+                            {% csrf_token %}
+                            <span>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                            {%bootstrap_field signup_form.username %}
+                            {%bootstrap_field signup_form.email %}
+                            <br>
+                            <ul><li>Your password can’t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li><li>Your password can’t be entirely numeric.</li></ul>
+                            {%bootstrap_field signup_form.password1 %}
+                            {%bootstrap_field signup_form.password2 %}
+                        
+                            <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
+                            <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
+                        </form>`)
+                        })
+                    }
+                    else if(response.type=='error'){
+                        
+                        console.log(response.errors)
+                       
+                        $('.signupdiv').html(`<div class="alert alert-danger" role="alert">
+                            <li>${response.errors}</li>
+                                <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div>
+                          </div>`)
+                          $('#fillagain').click(function(){
+                            $('.signupdiv').html(`
+                        <h1>Welcome To SignUp Page</h1>
+                        <form action="{% url 'accounts:signup' %}" method="post" id='signupform'>
+                            {% csrf_token %}
+                            <span>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                            {%bootstrap_field signup_form.username %}
+                            {%bootstrap_field signup_form.email %}
+                            <br>
+                            <ul><li>Your password can’t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li><li>Your password can’t be entirely numeric.</li></ul>
+                            {%bootstrap_field signup_form.password1 %}
+                            {%bootstrap_field signup_form.password2 %}
+                        
+                            <input type="submit" value="SignUp" class="btn btn-primary mt-3 form-control">
+                            <input type="btn" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
+                        </form>`)
+                        })
                     }
                 }
             });
