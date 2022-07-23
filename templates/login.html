@@ -1,6 +1,7 @@
 {% load bootstrap4 %}
 <div class="container text-center mt-5 card  border shadow-lg p-3 mb-5 rounded bg-gradient modal-content logindiv" id='other-components'>
-    <h1>Welcome To Login Page</h1>
+  <div class="loginformdiv">
+  <h1>Login Form</h1>
     <form action="{% url 'login' %}" method="post" id='user_login_form'>
         {% csrf_token %}
         {%bootstrap_form login_form%}
@@ -9,6 +10,7 @@
         <input type="button" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
     <br>
     </form>
+  </div>  
     <script>
         $(document).ready(function() {
             var form=$('#user_login_form')
@@ -26,23 +28,15 @@
                     if(response.type=='error'){
                         
                       console.log(response.errors)
-                     
-                      $('.logindiv').html(`<div class="alert alert-danger" role="alert">
+                     $('.loginformdiv').hide()
+                      $('.logindiv').prepend(`<div class="alert alert-danger erroralert" role="alert">
                           <li>${response.errors}</li>
                               <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div>
                         </div>`)
                         $('#fillagain').click(function(){
-                          $('.logindiv').html(`
-                          <h1>Welcome To Login Page</h1>
-                          <form action="{% url 'login' %}" method="post" id='user_login_form'>
-                              {% csrf_token %}
-                              {%bootstrap_form login_form%}
-                             <br>
-                              <input type="submit" value="Login" id="login_button" class="btn btn-primary mt-3 form-control">
-                              <input type="button" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
-                          <br>
-                          </form>
-                          `)
+                          form[0].reset()
+                          $('.loginformdiv').show()
+                        $('.erroralert').remove();
                       })
                   }
                   else{

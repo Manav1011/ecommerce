@@ -1,26 +1,16 @@
-from distutils.command.clean import clean
-from tkinter import S
-from django.forms import PasswordInput
-import json
 from django.shortcuts import render,redirect
 from django.urls import reverse,reverse_lazy
-from django.views.generic import CreateView
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from . import forms
 from django.utils.http import url_has_allowed_host_and_scheme
 from . import models
 from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 from django.contrib.auth import login,authenticate
-from carts.views import is_ajax
 from django.utils.html import strip_tags    
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
-from django.http import Http404
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
-from django.template import Template
 
 
 # Create your views here.
@@ -55,9 +45,11 @@ def SignUpView(request):
             send_mail(subject, plain_message, email_from, [request.POST.get('email'),], html_message=html_message,fail_silently=False)
             SignUpView.active=False
             return JsonResponse({'url':'accounts:check','type':'success'})
-        except:
+        except Exception as e:
+            print(e)
+            error=str(e)
             print('Exception Occured')
-            return JsonResponse({'Exception':'occured'})
+            return JsonResponse({'Exception':'occured','content':error})
     else:
         return JsonResponse({'errors':SignUpView.form.errors.as_json(),'type':'error'},safe=False)
 

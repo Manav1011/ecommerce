@@ -5,7 +5,7 @@
   <div class="alert bg-dark" role="alert">
     Wearable Items
   </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5">
+<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme">
     {% for i  in products %}    
     {% if i.catagories == 'wearable' %}
             <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
@@ -25,7 +25,7 @@
 <div class="alert bg-dark" role="alert">
   Digital Items
 </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5">
+<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme">
   {% for i  in products %}    
   {% if i.catagories == 'digital' %}
           <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
@@ -42,6 +42,7 @@
             {% endif %}
   {% endfor %}
 </div>
+
 <style>
   .scrolling-wrapper{
   
@@ -64,5 +65,30 @@
     display: inline-block;
   }
 </style>
+<script>
+  $(document).ready(function(){
+    $('.owl-carousel').owlCarousel({
+      loop:true,
+      margin:10,
+      nav:false,
+      autoplay:true,
+      autoplayTimeout:1000,
+      rewind:true,
+      dots:false,
+      autoplayHoverPause:true,
+      responsive:{
+          0:{
+              items:1
+          },
+          600:{
+              items:3
+          },
+          1000:{
+              items:5
+          }
+      }
+  })
+  })
+</script>
 
 {% endblock content%}

@@ -31,8 +31,7 @@
         <div class="container text-center">
         {% comment %} {% include 'themes.js.html' %} {% endcomment %}        
     {% block content %}
-    <div class="container text-center mt-5">
-<h1 >This is the home page of eCommerce</h1>
+  {% include 'home.html' %}
 
 {{authentication_form}}
 </div>{% endblock content %}

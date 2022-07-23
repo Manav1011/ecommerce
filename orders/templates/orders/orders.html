@@ -1,12 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<table class="table text-center ordertable" id='table'>
+<style>
+  .ordertable{
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    float: none;
+    
+  }
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+  }
+  
+  
+  .ordertable td th{
+    width:100%;
+    display: inline-block;
+  }
+  
+</style>
+<div class="ordertable">
+<table class="table text-center" id='table'>
     <thead>
       <tr>
         <th>Order ID</th>
+        <th>Shipping Address</th>
         <th>Status</th>
-        <th>Product Count</th>
+        <th>Items</th>
         <th>Order Total</th>
         <th>Timestamp</th>
         <th>Action</th>
@@ -14,10 +36,13 @@
     </thead>
     <tbody class="table-group-divider">
         {% for i in object %}
-      <tr>
+      <tr class="">
         <th>{{i.order_id}}</th> 
+        <th>{{i.shipping_address}}</th> 
         <td>{{i.status}}</td>
-        <td>{{i.cart.products.all.count}}</td>
+        <td>{% for j in i.cart.products.all %}
+          <a href={% url 'product:product_detail' slug=j.slug %}>{{j}}</a>,
+          {% endfor %}</td>
         <td>{{i.order_total}}</td>
         <td>{{i.timestamp}}</td>
         <td><a href="{% url 'orders:delete_order' pk=i.pk %}" class="btn btn-outline-danger btn-sm delete_order">Delete</a></td>
@@ -25,23 +50,7 @@
       {% endfor %}
     </tbody>
     <script>    
-    $(document).ready(function() {
-      if ($(window).width() < 900) {
-        console.log('<900')
-        $('table').css({'font-size':'10px'});
-    }
-    else if($(window).width() < 1200){
-      $('table').css({'font-size':'20px'});
-
-    }
-    else if($(window).width() < 800){
-      $('table').css({'font-size':'5px'});
-
-    }
-    else if($(window).width() < 400){
-      $('table').css({'font-size':'1px'});
-
-    }
+    $(document).ready(function() {      
         var deletes=$('.delete_order');
         deletes.click(function(event){
             event.preventDefault();
@@ -60,4 +69,5 @@
     })    
     </script>
   </table>
+</div>
 {% endblock content %}

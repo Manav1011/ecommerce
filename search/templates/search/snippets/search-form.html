@@ -1,6 +1,6 @@
 <div class="me-auto">
 <form class="d-flex search_form" role="search" method="GET" action={% url 'search:query' %} autocomplete="off">
-    <input class="form-control me-2 q" id="searchForm" type="text" name="q" placeholder="Search" aria-label="Search" value={{request.GET.q}}>
+    <input class="form-control me-2 q" id="searchForm" type="text" name="q" placeholder="Search" aria-label="Search" value="{{request.GET.q}}" required>
     <button class="btn btn-outline-success" id="search" type="submit">Search</button>
   </form>
 </div>

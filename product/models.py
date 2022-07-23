@@ -48,6 +48,9 @@ class ProductQuerySet(models.query.QuerySet):
     
 
 class ProductManager(models.Manager):
+    def get_values(self):
+        return self.get_queryset().values('title')
+    
     def get_queryset(self):
         return ProductQuerySet(self.model,using=self._db)
     
