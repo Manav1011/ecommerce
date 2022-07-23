@@ -11,7 +11,8 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
-
+from uuid import uuid4
+import datetime
 
 # Create your views here.
 
@@ -76,37 +77,49 @@ def activated(request):
 def username_for_reset_password(request):
     try:
         print(request.POST)
-        username_for_reset_password.counter=0
+        username_for_reset_password.rand_token = uuid4()
+        print(username_for_reset_password.rand_token)
+        str_token=str(username_for_reset_password.rand_token)
         user_obj=User.objects.get(username=request.POST.get('username'))
         subject='Password Reset Link'
-        html_message = render_to_string('reset_password_link.html',{'domain':request.get_host(),'username':request.POST.get('username')})
+        html_message = render_to_string('reset_password_link.html',{'domain':request.get_host(),'username':request.POST.get('username'),'token':str_token})
         plain_message = strip_tags(html_message)
         email_from ='manavshah1011.ms@gmail.com'
         recipirent_list=[user_obj.email,]
         print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False)) 
+        username_for_reset_password.current_time=datetime.datetime.now()
+        print(username_for_reset_password.current_time)
         return HttpResponse('Form has been submitted')
     except Exception as e:
         print(e)
         return HttpResponse('Form has not been submitted')
     
-def reset_password_page(request,username):
+def reset_password_page(request,username,token):
     context={
-        'username':username
+        'username':username,
+        'token':token
     }
     return render(request, 'reset_password.html',context)
 
 
 def reset_password(request):
     if request.method == 'POST':
+        formreceivedtime=datetime.datetime.now()
+        print(formreceivedtime)
+        onetimetoken=request.POST.get('onetimetoken')
         try:
-            username_for_reset_password.counter+=1
-            if username_for_reset_password.counter <= 1:
+            delta=formreceivedtime-username_for_reset_password.current_time
+            print(delta.total_seconds()/60)
+            print(username_for_reset_password.rand_token)
+            if onetimetoken == str(username_for_reset_password.rand_token) and delta.total_seconds()/60 <=5:
                 username=request.POST.get('username')
                 password=request.POST.get('password')
                 print(password)
                 user_obj=User.objects.get(username=username)
                 user_obj.set_password(password)
                 user_obj.save()
+                username_for_reset_password.rand_token= uuid4()
+                print(username_for_reset_password.rand_token)
                 return JsonResponse({'content':'Password has been changed','result':'success'})
             else:
                 return JsonResponse({'content':'Password Reset link has been expired','result':'error'})

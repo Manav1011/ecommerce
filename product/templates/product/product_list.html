@@ -5,7 +5,7 @@
   <div class="alert bg-dark" role="alert">
     Wearable Items
   </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme">
+<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme text-center">
     {% for i  in products %}    
     {% if i.catagories == 'wearable' %}
             <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
@@ -25,7 +25,7 @@
 <div class="alert bg-dark" role="alert">
   Digital Items
 </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme">
+<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme text-center">
   {% for i  in products %}    
   {% if i.catagories == 'digital' %}
           <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">

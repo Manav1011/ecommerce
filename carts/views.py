@@ -95,6 +95,10 @@ def checkout_home(request):
                     guest_email_id = None
                 except:
                     pass
+            else:
+                return JsonResponse({'errors':form.errors.as_json(),'type':'error'},safe=False)
+        else:
+            return JsonResponse({'errors':form.errors.as_json(),'type':'error'},safe=False)
 
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs=None

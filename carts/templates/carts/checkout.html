@@ -5,18 +5,56 @@
 
 {% if not billing_profile %}
         <div class="container m-5">
-        <div class="row">
+        <div class="row logindivcheckout">
             <p class="lead">Login</p>
 
-            <form action={% url 'carts:checkout' %} method="post">
+            <form action={% url 'carts:checkout' %} method="post" class='loginformdivcheckout' id='user_login_form_checkout'>
                 {% if next %}
                 <input type="hidden" name="next_url" value="{{next}}"> 
                 {% csrf_token %}
-            {%bootstrap_form form%}
+            {%bootstrap_form login_form%}
             <input type="submit" value="Login" class="btn btn-primary mt-3">
             {% endif %}
         </form>
 
+        <script>
+            $(document).ready(function() {
+                var form=$('#user_login_form_checkout')
+                form.submit(function(event){
+                    event.preventDefault();
+                    var thisForm = $(this)
+                    var actionEndPoint=thisForm.attr('action')
+                    var httpMethod=thisForm.attr('method')
+                    var formData=thisForm.serialize();
+                    $.ajax({
+                      url: actionEndPoint,
+                      method: httpMethod,
+                      data:formData,  
+                      success: function(response){
+                        if(response.type=='error'){
+                            
+                          console.log(response.errors)
+                         $('.loginformdivcheckout').hide()
+                          $('.logindivcheckout').prepend(`<div class="alert alert-danger erroralert" role="alert">
+                              <li>${response.errors}</li>
+                                  <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div>
+                            </div>`)
+                            $('#fillagain').click(function(){
+                              $('.loginformdivcheckout').show()
+                            $('.erroralert').remove();
+                          })
+                      }
+                      else{
+                        window.location.reload()
+                      }
+                      },
+                      error:function(errorData){
+                        console.log(errorData)
+                      }
+                    })
+                })
+            })
+        </script>
         </div>
 
         <div class="row">
