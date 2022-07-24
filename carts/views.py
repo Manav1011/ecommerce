@@ -83,7 +83,7 @@ def checkout_home(request):
     billing_address_id=request.session.get('billing_address_id', None)
     shipping_address_id=request.session.get('shipping_address_id', None)
     
-    if request.method == "POST":
+    if request.method == "POST" and not request.user.is_authenticated and not request.session.get('guest_email_id'):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = authenticate(
@@ -105,9 +105,9 @@ def checkout_home(request):
     
     if billing_profile is not None:
         order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)        
-        context={
+        context.update({
             'totalforpayment':order_obj.order_total*100,
-        }
+        })
         if request.user.is_authenticated:
             address_qs=Address.objects.filter(billing_profile=billing_profile)    
         if shipping_address_id:

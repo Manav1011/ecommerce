@@ -75,9 +75,13 @@
   <div class="modal fade" id="resetpassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="container text-center mt-5 card  border shadow-lg p-3 mb-5 rounded bg-gradient modal-content resetpasswordmodal" id='other-components'>
+        <div class="resetpassworddiv">
         <form action="{% url 'accounts:username_for_reset_password' %}" method="post" id="submit_username">
           {% csrf_token %}
+          <span>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
           {%bootstrap_form usernameforpasswordresetform%}
+          <br>
+          <span>This will only work if your account is activated</span>
           <br>
           <div class="" role="status" id='spinner-div'>
         <input type="submit" value="Submit" class="btn btn-primary mt-3 form-control resetbutton">
@@ -87,6 +91,7 @@
         <input type="button" value="Cancel" class="btn btn-danger mt-3 form-control" data-bs-dismiss="modal" aria-label="Close">
       </div>
       </form> 
+    </div>
       </div>
       
 </div>
@@ -95,7 +100,8 @@
   <script>
     $(document).ready(function() {
       $('#submit_username').submit(function(event){
-        $('.resetpasswordmodal').html(`<div class="alert alert-primary" role="alert">
+        $('.resetpassworddiv').hide();
+        $('.resetpasswordmodal').prepend(`<div class="alert alert-primary" id='mailsending' role="alert">
           Sending Mail....
         </div>`)
           event.preventDefault()
@@ -108,11 +114,26 @@
             method:formmethod,
             data:data,
             success:function(response){
+              if(response.type =='success'){
               $('#spinner-div').removeClass('spinner-border text-primary')
               console.log(response)
               $('.resetpasswordmodal').html(`<div class="alert alert-success" role="alert">
                 Password reset link has been sent to you email
               </div>`)
+              }
+              else if(response.Exception =='occured'){
+                $('#mailsending').remove();
+                $('.resetpassworddiv').hide()
+                $('.resetpasswordmodal').prepend(`<div class="alert alert-danger exceptionalert" role="alert">
+                    ${response.content}
+                    <div class='container text-center'><button id='fillagain' class='btn btn-warning'>Fill Again</button></div>
+                </div>
+                `)
+                $('#fillagain').click(function(){
+                    $('.resetpassworddiv').show()
+                    $('.exceptionalert').remove()
+                })
+            }
             },
             error:function(errorData){
               console.log(errorData)

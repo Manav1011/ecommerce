@@ -39,12 +39,16 @@ def SignUpView(request):
     SignUpView.form=forms.SignUpForm(request.POST or None)    
     if SignUpView.form.is_valid():
         try:
+            SignUpView.rand_token = uuid4()
+            print(SignUpView.rand_token)
+            str_token=str(SignUpView.rand_token)
             subject='Account Activation From eCommerce Website'
-            html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username')})
+            html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username'),'token':str_token})
             plain_message = strip_tags(html_message)
             email_from ='manavshah1011.ms@gmail.com'
             send_mail(subject, plain_message, email_from, [request.POST.get('email'),], html_message=html_message,fail_silently=False)
-            SignUpView.active=False
+            SignUpView.current_time=datetime.datetime.now()
+            print(SignUpView.current_time)
             return JsonResponse({'url':'accounts:check','type':'success'})
         except Exception as e:
             print(e)
@@ -55,17 +59,24 @@ def SignUpView(request):
         return JsonResponse({'errors':SignUpView.form.errors.as_json(),'type':'error'},safe=False)
 
     
-def active_account(request,username):
+def active_account(request,username,token):
+    token=token
+    print(token)
     username=username
+    responsetime=datetime.datetime.now()
     try:
-        SignUpView.form.save(commit=True)
-        user_obj=User.objects.get(username=username)
-        if SignUpView.active == False:
-            SignUpView.active=True
+        timedelta=responsetime-SignUpView.current_time
+        print(timedelta.total_seconds()/60)
+        print(SignUpView.rand_token)
+        if token==str(SignUpView.rand_token) and timedelta.total_seconds()/60 <=5:
+            SignUpView.form.save(commit=True)
+            SignUpView.rand_token= uuid4()
+            print(SignUpView.rand_token)
             return HttpResponseRedirect(reverse('accounts:activated'))
         else:        
             return HttpResponse(r'Your Account is already activated.')
     except:
+        print('exception occured')
         return HttpResponse(r'Your Account is already activated.')
     
 
@@ -89,10 +100,11 @@ def username_for_reset_password(request):
         print(send_mail(subject, plain_message, email_from, recipirent_list, html_message=html_message,fail_silently=False)) 
         username_for_reset_password.current_time=datetime.datetime.now()
         print(username_for_reset_password.current_time)
-        return HttpResponse('Form has been submitted')
+        return JsonResponse({'type':'success'})
     except Exception as e:
-        print(e)
-        return HttpResponse('Form has not been submitted')
+        error=str(e)
+        print('Exception Occured')
+        return JsonResponse({'Exception':'occured','content':error})
     
 def reset_password_page(request,username,token):
     context={

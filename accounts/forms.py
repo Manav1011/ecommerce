@@ -39,6 +39,13 @@ class GuestForm(forms.ModelForm):
     
 class UsernameForPasswordReset(forms.Form):
     username=forms.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget=forms.TextInput(attrs={
+            'pattern':'[A-Za-z0-9@_+-.]+',
+            'id':'signupusername',
+        })
     
     
     
