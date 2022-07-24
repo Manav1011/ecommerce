@@ -146,7 +146,11 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            return JsonResponse({'content':'Password has been changed'})
+            return JsonResponse({'content':'Password has been changed','type':'success'})
+        else:
+            print('form is not valid')
+            return JsonResponse({'errors':form.errors.as_json(),'type':'error'},safe=False)
+            
     else:
         form=PasswordChangeForm(request.user)
         
