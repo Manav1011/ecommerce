@@ -5,18 +5,18 @@
   <div class="alert bg-dark" role="alert">
     Wearable Items
   </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme text-center">
+<div class="mt-2 scrolling-wrapper mt-5">
     {% for i  in products %}    
     {% if i.catagories == 'wearable' %}
-            <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:32vh; margin" id="other-components">
-              <div style="height:27vh;">
+            <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
+              <div style="height:25vh;"class='images'>
                 <img src="{{i.image.url}}" class="card-img-top" alt="..." style="height: 100%; width: 100%; object-fit: contain'">
               </div>
                 <div class="card-body">
                   <p class="card-title text-center" style='font-size: 0.9rem;'>{{i.title |lower}}</p>
                   {% include 'product/update_cart.html' with product=i cart=cart %}
                   <br>
-                  <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-outline-primary form-control">Details</a>
+                  <a href={% url 'product:product_detail' slug=i.slug %} class="btn btn-outline-primary detailbutton form-control">Details</a>
                 </div>
               </div>
               {% endif %}
@@ -25,7 +25,7 @@
 <div class="alert bg-dark" role="alert">
   Digital Items
 </div>
-<div class="container-fluid mt-2 scrolling-wrapper mt-5 owl-carousel owl-theme text-center">
+<div class="mt-2 scrolling-wrapper mt-5">
   {% for i  in products %}    
   {% if i.catagories == 'digital' %}
           <div class="card shadow-lg p-2 m-2 border border-light bg-gradient carddiv" style="width:30vh; margin" id="other-components">
@@ -66,28 +66,49 @@
   }
 </style>
 <script>
-  $(document).ready(function(){
-    $('.owl-carousel').owlCarousel({
-      loop:true,
-      margin:10,
-      nav:false,
-      autoplay:true,
-      autoplayTimeout:1000,
-      rewind:true,
-      dots:false,
-      autoplayHoverPause:true,
-      responsive:{
-          0:{
-              items:1
-          },
-          600:{
-              items:3
-          },
-          1000:{
-              items:5
-          }
-      }
-  })
+  $(document).ready(function() {
+    if($(document).width() > 200 && $(document).width() < 400){
+      $('.carddiv').css('width','20vh')
+  
+      $('.detailbutton').addClass('btn-sm')
+      $('.detailbutton').css('font-size','smaller')
+      $('.addremvoe').addClass('btn-sm')
+      $('.addremvoe').css('font-size','smaller')
+      $('.images').css('height','20vh')
+    }
+    if($(document).width() > 400 && $(document).width() < 600){
+      $('.carddiv').css('width','20vh')
+      $('.carddiv').css('font-size','10px')
+      $('.detailbutton').addClass('btn-sm')
+      $('.detailbutton').css('font-size','smaller')
+      $('.addremvoe').addClass('btn-sm')
+      $('.addremvoe').css('font-size','smaller')
+      $('.images').css('height','20vh')
+    }
+    if($(document).width() > 600 && $(document).width() < 800){
+      $('.carddiv').css('width','20vh')
+      $('.carddiv').css('font-size','15px')
+      $('.detailbutton').addClass('btn-sm')
+      $('.detailbutton').css('font-size','smaller')
+      $('.addremvoe').addClass('btn-sm')
+      $('.addremvoe').css('font-size','smaller')
+      $('.images').css('height','20vh')
+    }
+    if($(document).width() > 800 && $(document).width() < 1000){
+      $('.detailbutton').addClass('btn-sm')
+      $('.carddiv').css('font-size','15px')
+      $('.carddiv').css('width','20vh')
+      $('.addremvoe').addClass('btn-sm')
+      $('.addremvoe').css('font-size','smaller')
+      $('.images').css('height','20vh')
+    }
+    if($(document).width() > 1000 && $(document).width() < 1200){
+      $('.carddiv').css('width','30vh')
+    }
+    if($(document).width() > 1200){
+      $('.carddiv').css('width','30vh')
+    }
+    
   })
 </script>
 

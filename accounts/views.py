@@ -13,7 +13,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from uuid import uuid4
 import datetime
-
 # Create your views here.
 
 def LoginView(request):
@@ -34,54 +33,54 @@ def LoginView(request):
     return HttpResponseRedirect(reverse('home'))
     
 
+class SignupProcess():
+    def SignUpView(request):
+        SignupProcess.form=forms.SignUpForm(request.POST or None)    
+        if SignupProcess.form.is_valid():
+            try:
+                SignupProcess.rand_token = uuid4()
+                print(SignupProcess.rand_token)
+                str_token=str(SignupProcess.rand_token)
+                subject='Account Activation From eCommerce Website'
+                html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username'),'token':str_token})
+                plain_message = strip_tags(html_message)
+                email_from ='manavshah1011.ms@gmail.com'
+                send_mail(subject, plain_message, email_from, [request.POST.get('email'),], html_message=html_message,fail_silently=False)
+                SignupProcess.current_time=datetime.datetime.now()
+                print(SignupProcess.current_time)
+                return JsonResponse({'url':'accounts:check','type':'success'})
+            except Exception as e:
+                print(e)
+                error=str(e)
+                print('Exception Occured')
+                return JsonResponse({'Exception':'occured','content':error})
+        else:
+            return JsonResponse({'errors':SignupProcess.form.errors.as_json(),'type':'error'},safe=False)
 
-def SignUpView(request):
-    SignUpView.form=forms.SignUpForm(request.POST or None)    
-    if SignUpView.form.is_valid():
+        
+    def active_account(request,username,token):
+        token=token
+        print(token)
+        username=username
+        responsetime=datetime.datetime.now()
         try:
-            SignUpView.rand_token = uuid4()
-            print(SignUpView.rand_token)
-            str_token=str(SignUpView.rand_token)
-            subject='Account Activation From eCommerce Website'
-            html_message = render_to_string('account_activation.html',{'domain':request.get_host(),'username':request.POST.get('username'),'token':str_token})
-            plain_message = strip_tags(html_message)
-            email_from ='manavshah1011.ms@gmail.com'
-            send_mail(subject, plain_message, email_from, [request.POST.get('email'),], html_message=html_message,fail_silently=False)
-            SignUpView.current_time=datetime.datetime.now()
-            print(SignUpView.current_time)
-            return JsonResponse({'url':'accounts:check','type':'success'})
-        except Exception as e:
-            print(e)
-            error=str(e)
-            print('Exception Occured')
-            return JsonResponse({'Exception':'occured','content':error})
-    else:
-        return JsonResponse({'errors':SignUpView.form.errors.as_json(),'type':'error'},safe=False)
-
-    
-def active_account(request,username,token):
-    token=token
-    print(token)
-    username=username
-    responsetime=datetime.datetime.now()
-    try:
-        timedelta=responsetime-SignUpView.current_time
-        print(timedelta.total_seconds()/60)
-        print(SignUpView.rand_token)
-        if token==str(SignUpView.rand_token) and timedelta.total_seconds()/60 <=5:
-            SignUpView.form.save(commit=True)
-            SignUpView.rand_token= uuid4()
-            print(SignUpView.rand_token)
-            return HttpResponseRedirect(reverse('accounts:activated'))
-        else:        
+            timedelta=responsetime-SignupProcess.current_time
+            print(timedelta.total_seconds()/60)
+            print(SignupProcess.rand_token)
+            if token==str(SignupProcess.rand_token) and timedelta.total_seconds()/60 <=5:
+                SignupProcess.form.save(commit=True)
+                SignupProcess.rand_token= uuid4()
+                print(SignupProcess.rand_token)
+                return HttpResponseRedirect(reverse('accounts:activated'))
+            else:        
+                return HttpResponse(r'Your Account is already activated.')
+        except:
+            print('exception occured')
             return HttpResponse(r'Your Account is already activated.')
-    except:
-        print('exception occured')
-        return HttpResponse(r'Your Account is already activated.')
-    
+        
 
-def activated(request):
-    return render(request,'activated.html')
+    def activated(request):
+        return render(request,'activated.html')
 
 
 
