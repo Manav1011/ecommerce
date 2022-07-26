@@ -88,7 +88,8 @@
 
 -HP pavilion pavilion 14 ec0035au
   
-    <img width="915" alt="main" src="https://user-images.githubusercontent.com/87382558/180990098-b96d55dd-bfc2-4508-9cd0-a7d7d7d9d3ed.PNG">
+   <img width="915" alt="main" src="https://user-images.githubusercontent.com/87382558/180990243-29f6260e-9b77-414f-a078-6df2bedb1373.PNG">
+
 
   
   
